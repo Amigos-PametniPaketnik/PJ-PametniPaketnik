@@ -32,6 +32,8 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (arguments?.containsKey("scan") == true)
+            binding.textViewParcelLocker.text = "Scaned parcel locker: ${arguments?.getString("scan")}"
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
