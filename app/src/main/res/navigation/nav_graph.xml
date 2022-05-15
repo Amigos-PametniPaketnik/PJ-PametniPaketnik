@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_PictureFragment"
+            app:destination="@id/PictureFragment" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
@@ -23,6 +26,17 @@
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/PictureFragment"
+        android:name="com.example.pametni_paketnik.PictureFragment"
+        android:label="@string/picture_fragment_label"
+        tools:layout="@layout/fragment_picture">
+
+        <action
+            android:id="@+id/action_PictureFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
 </navigation>

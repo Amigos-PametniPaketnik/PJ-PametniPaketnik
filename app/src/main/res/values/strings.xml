@@ -9,4 +9,5 @@
 
     <string name="hello_first_fragment">Unlock your Direct4me parcel locker</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="picture_fragment_label">Login</string>
 </resources>
