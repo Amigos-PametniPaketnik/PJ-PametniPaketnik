@@ -15,7 +15,7 @@ import com.example.pametni_paketnik.databinding.FragmentSecondBinding
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class SecondFragment : Fragment() {
+class ScanQRCodeFragment : Fragment() {
 
     private var _binding: FragmentSecondBinding? = null
     private lateinit var cameraHelper: CameraHelper
