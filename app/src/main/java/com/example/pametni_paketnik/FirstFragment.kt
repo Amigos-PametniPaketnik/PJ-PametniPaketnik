@@ -1,6 +1,9 @@
 package com.example.pametni_paketnik
 
 import android.os.Bundle
+import android.os.Environment
+import android.util.Base64
+import android.util.Base64.decode
 import android.util.JsonReader
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,11 +18,24 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import java.io.File
 import java.io.IOException
+import java.io.FileOutputStream
+
+import java.util.zip.ZipEntry
+
+import java.util.zip.ZipInputStream
+
+import java.io.FileInputStream
+
+
+
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
+
+
 class FirstFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
@@ -73,9 +89,55 @@ class FirstFragment : Fragment() {
                 val responseData = response.body!!.string()
                 val jsonObject = JSONObject(responseData)
                 val boxToken = jsonObject.getString("data") // Here is token base64 encoded and zipped token for playing to open a box
-                println("Response from Direct4me: $responseData")
+
+                val boxTokenBytes: ByteArray = Base64.decode(boxToken, Base64.DEFAULT)
+                var fileNameZip= writeBytesAsZip(boxTokenBytes)
+                var SoundFileName= unzip("/data/data/com.example.pametni_paketnik/token/"+fileNameZip,"/data/data/com.example.pametni_paketnik/token")
+
                 //activity?.runOnUiThread { Toast.makeText(this.requireContext(), "Received from Direct4me: $boxToken", Toast.LENGTH_LONG).show() }
             }
         }).start()
+    }
+    fun unzip(_zipFile: String?, _targetLocation: String):String {
+
+        //create target location folder if not exist
+        val f = File(_targetLocation)
+        if(!f.isDirectory()){
+            f.mkdir()
+        }
+        try {
+            val fin = FileInputStream(_zipFile)
+            val zin = ZipInputStream(fin)
+            var ze: ZipEntry? = null
+            val path = File("/data/data/com.example.pametni_paketnik/token")
+            var file = File.createTempFile("token",".wav", path)
+            while (zin.nextEntry.also { ze = it } != null) {
+                    val fout = FileOutputStream(file)
+                    var c = zin.read()
+                    while (c != -1) {
+                        fout.write(c)
+                        c = zin.read()
+                    }
+                    zin.closeEntry()
+                    fout.close()
+            }
+            zin.close()
+            return file.name
+        } catch (e: Exception) {
+            println("unzip error: "+ e)
+        }
+        return ""
+    }
+    fun writeBytesAsZip(bytes : ByteArray):String {
+        val path = File("/data/data/com.example.pametni_paketnik/token")
+        if(!path.isDirectory()){
+            path.mkdir()
+        }
+
+        var file = File.createTempFile("token",".zip", path)
+        var os = FileOutputStream(file);
+        os.write(bytes);
+        os.close();
+        return file.name
     }
 }
