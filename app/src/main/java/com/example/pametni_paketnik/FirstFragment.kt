@@ -1,5 +1,10 @@
 package com.example.pametni_paketnik
 
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
+import android.content.DialogInterface
+import android.media.AudioAttributes
 import android.os.Bundle
 import android.os.Environment
 import android.util.Base64
@@ -21,6 +26,9 @@ import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.io.FileOutputStream
+import android.media.MediaPlayer
+import android.net.Uri
+
 
 import java.util.zip.ZipEntry
 
@@ -45,7 +53,8 @@ class FirstFragment : Fragment() {
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
@@ -69,6 +78,7 @@ class FirstFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
     fun getTokenForParcelLocker(boxId: String) {
         Thread(Runnable {
             val client = OkHttpClient()
@@ -95,8 +105,17 @@ class FirstFragment : Fragment() {
                 var SoundFileName= unzip("/data/data/com.example.pametni_paketnik/token/"+fileNameZip,"/data/data/com.example.pametni_paketnik/token")
 
                 //activity?.runOnUiThread { Toast.makeText(this.requireContext(), "Received from Direct4me: $boxToken", Toast.LENGTH_LONG).show() }
+                playToken()
+
             }
         }).start()
+        val alertDialogBuilder = AlertDialog.Builder(requireContext())
+        alertDialogBuilder.setTitle("Package opening")
+        alertDialogBuilder.setMessage("Has the package opened?")
+        alertDialogBuilder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, id -> dialog.cancel()})
+        alertDialogBuilder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, id -> dialog.cancel() })
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
     }
     fun unzip(_zipFile: String?, _targetLocation: String):String {
 
@@ -139,5 +158,42 @@ class FirstFragment : Fragment() {
         os.write(bytes);
         os.close();
         return file.name
+    }
+
+    private var mediaPlayer: MediaPlayer? = null
+
+    fun playToken() {
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(requireContext(), R.raw.token) //tuka mam shranjen token.wav v res/raw
+            mediaPlayer!!.start()
+        } else mediaPlayer!!.start()
+    }
+
+// toti spodni ne dela neki problem z uri
+    /*fun playToken() {
+        val myUri: Uri = Uri.fromFile(File("/data/app/com.example.pametni_paketnik/token/token.wav"))
+        try {
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(requireContext(), myUri)
+                setAudioAttributes(AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+                )
+                prepare()
+                start()
+            }
+        } catch (exception: IOException) {
+            mediaPlayer?.release()
+            mediaPlayer = null
+        }
+    }*/
+
+    override fun onStop() {
+        super.onStop()
+        if (mediaPlayer != null) {
+            mediaPlayer!!.release()
+            mediaPlayer = null
+        }
     }
 }
