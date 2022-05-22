@@ -8,4 +8,4 @@ class AccessPermission (
     var idUser:String,
     var accessableFrom:Date,
     var accessableTo:Date,
-    val id:String = UUID.randomUUID().toString().replace("-", "")) {}
+    val id:String ) {}

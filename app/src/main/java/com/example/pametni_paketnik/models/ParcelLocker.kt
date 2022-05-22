@@ -12,4 +12,4 @@ class ParcelLocker (
     var postal  :Int,
     var location:String,
     var owner:String,
-    val id:String = UUID.randomUUID().toString().replace("-", "")) {}
+    val id:String ) {}

@@ -8,4 +8,4 @@ class User (
     var name:String,
     var lastname:String,
     var email:String,
-    val id:String = UUID.randomUUID().toString().replace("-", "")) {}
+    val id:String) {}
