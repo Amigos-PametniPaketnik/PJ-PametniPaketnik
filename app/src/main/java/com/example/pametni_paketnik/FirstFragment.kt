@@ -28,6 +28,7 @@ import java.io.IOException
 import java.io.FileOutputStream
 import android.media.MediaPlayer
 import android.net.Uri
+import com.google.android.material.snackbar.Snackbar
 
 
 import java.util.zip.ZipEntry
@@ -67,8 +68,14 @@ class FirstFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         lateinit var data: String
 
-        if (arguments?.containsKey("scan") == true)
-            getTokenForParcelLocker(arguments?.getString("scan")!!)
+        if (arguments?.containsKey("scan") == true) {
+            try {
+                getTokenForParcelLocker(arguments?.getString("scan")!!)
+            }
+            catch (e: Exception) {
+                Snackbar.make(this.requireView(), "${e.message}", Snackbar.LENGTH_LONG).show()
+            }
+        }
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
@@ -81,41 +88,43 @@ class FirstFragment : Fragment() {
 
     fun getTokenForParcelLocker(boxId: String) {
         Thread(Runnable {
-            val client = OkHttpClient()
-            val token = "9ea96945-3a37-4638-a5d4-22e89fbc998f"
-            val MEDIA_TYPE_JSON = "application/json; charset=utf-8".toMediaType()
+            try {
+                val client = OkHttpClient()
+                val token = "9ea96945-3a37-4638-a5d4-22e89fbc998f"
+                val MEDIA_TYPE_JSON = "application/json; charset=utf-8".toMediaType()
 
-            val payload = """{"boxId" : $boxId, "tokenFormat" : 2}"""
+                val payload = """{"boxId" : "000542", "tokenFormat" : 2}"""
 
-            val request = Request.Builder()
-                .url("https://api-ms-stage.direct4.me/sandbox/v1/Access/openbox")
-                .addHeader("Authorization", "Bearer " + token)
-                .post(payload.toRequestBody(MEDIA_TYPE_JSON))
-                .build()
+                val request = Request.Builder()
+                    .url("https://api-ms-stage.direct4.me/sandbox/v1/Access/openbox")
+                    .addHeader("Authorization", "Bearer " + token)
+                    .post(payload.toRequestBody(MEDIA_TYPE_JSON))
+                    .build()
 
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                client.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) throw IOException("Error occured in API request. Code: $response")
 
-                val responseData = response.body!!.string()
-                val jsonObject = JSONObject(responseData)
-                val boxToken = jsonObject.getString("data") // Here is token base64 encoded and zipped token for playing to open a box
+                    val responseData = response.body!!.string()
+                    val jsonObject = JSONObject(responseData)
+                    val boxToken =
+                        jsonObject.getString("data") // Here is token base64 encoded and zipped token for playing to open a box
 
-                val boxTokenBytes: ByteArray = Base64.decode(boxToken, Base64.DEFAULT)
-                var fileNameZip= writeBytesAsZip(boxTokenBytes)
-                var SoundFileName= unzip("/data/data/com.example.pametni_paketnik/token/"+fileNameZip,"/data/data/com.example.pametni_paketnik/token")
+                    val boxTokenBytes: ByteArray = Base64.decode(boxToken, Base64.DEFAULT)
+                    var fileNameZip = writeBytesAsZip(boxTokenBytes)
+                    var SoundFileName = unzip(
+                        "/data/data/com.example.pametni_paketnik/token/" + fileNameZip,
+                        "/data/data/com.example.pametni_paketnik/token"
+                    )
 
-                //activity?.runOnUiThread { Toast.makeText(this.requireContext(), "Received from Direct4me: $boxToken", Toast.LENGTH_LONG).show() }
-                playToken()
+                    //activity?.runOnUiThread { Toast.makeText(this.requireContext(), "Received from Direct4me: $boxToken", Toast.LENGTH_LONG).show() }
+                    playToken(SoundFileName);
 
+                }
+            }
+            catch (e: Exception) {
+                activity?.runOnUiThread { Snackbar.make(this.requireView(), "${e.message}", Snackbar.LENGTH_LONG).show() }
             }
         }).start()
-        val alertDialogBuilder = AlertDialog.Builder(requireContext())
-        alertDialogBuilder.setTitle("Package opening")
-        alertDialogBuilder.setMessage("Has the package opened?")
-        alertDialogBuilder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, id -> dialog.cancel()})
-        alertDialogBuilder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, id -> dialog.cancel() })
-        val alertDialog = alertDialogBuilder.create()
-        alertDialog.show()
     }
     fun unzip(_zipFile: String?, _targetLocation: String):String {
 
@@ -147,13 +156,14 @@ class FirstFragment : Fragment() {
         }
         return ""
     }
+
     fun writeBytesAsZip(bytes : ByteArray):String {
         val path = File("/data/data/com.example.pametni_paketnik/token")
         if(!path.isDirectory()){
             path.mkdir()
         }
 
-        var file = File.createTempFile("token",".zip", path)
+        var file = File.createTempFile("token",".zip", path) // unzip base64 decoded token
         var os = FileOutputStream(file);
         os.write(bytes);
         os.close();
@@ -162,32 +172,23 @@ class FirstFragment : Fragment() {
 
     private var mediaPlayer: MediaPlayer? = null
 
-    fun playToken() {
+    fun playToken(tokenPath: String) {
         if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer.create(requireContext(), R.raw.token) //tuka mam shranjen token.wav v res/raw
+            println(tokenPath)
+            mediaPlayer = MediaPlayer.create(requireContext(), Uri.parse("/data/data/com.example.pametni_paketnik/token/$tokenPath")) //get base64 decoded and unziped wav token
+            mediaPlayer!!.setOnCompletionListener(MediaPlayer.OnCompletionListener { // When playback of token is over ask user if his box has opened
+                val alertDialogBuilder = AlertDialog.Builder(requireContext())
+                alertDialogBuilder.setTitle("Package opening")
+                alertDialogBuilder.setMessage("Has the package opened?")
+                alertDialogBuilder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, id -> dialog.cancel()})
+                alertDialogBuilder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, id -> dialog.cancel() })
+                val alertDialog = alertDialogBuilder.create()
+                alertDialog.show()
+            })
             mediaPlayer!!.start()
+            this.activity?.runOnUiThread { Snackbar.make(this.requireView(), "Playing token", mediaPlayer!!.duration).show() }
         } else mediaPlayer!!.start()
     }
-
-// toti spodni ne dela neki problem z uri
-    /*fun playToken() {
-        val myUri: Uri = Uri.fromFile(File("/data/app/com.example.pametni_paketnik/token/token.wav"))
-        try {
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(requireContext(), myUri)
-                setAudioAttributes(AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build()
-                )
-                prepare()
-                start()
-            }
-        } catch (exception: IOException) {
-            mediaPlayer?.release()
-            mediaPlayer = null
-        }
-    }*/
 
     override fun onStop() {
         super.onStop()
