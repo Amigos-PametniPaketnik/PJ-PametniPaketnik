@@ -8,4 +8,4 @@ class Unlocked (
     var idUser:String,
     var dateTime:Date,
     var opened: Boolean,
-    val id:String = UUID.randomUUID().toString().replace("-", "")) {}
+    val id:String) {}
