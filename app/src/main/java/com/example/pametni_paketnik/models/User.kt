@@ -2,9 +2,9 @@ package com.example.pametni_paketnik.models
 
 import java.util.*
 
-class User (
+data class User (
     var username: String,
-    var password:String,
+    var accesstoken:String,
     var name:String,
     var lastname:String,
     var email:String,

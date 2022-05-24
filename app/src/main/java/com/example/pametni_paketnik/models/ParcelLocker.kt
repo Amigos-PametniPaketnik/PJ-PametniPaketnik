@@ -3,7 +3,7 @@ package com.example.pametni_paketnik.models
 import java.util.*
 
 
-class ParcelLocker (
+data class ParcelLocker (
     var numberParcelLocker: String,
     var name:String,
     var description :String,

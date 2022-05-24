@@ -96,7 +96,7 @@ class FirstFragment : Fragment() {
                 val payload = """{"boxId" : "000542", "tokenFormat" : 2}"""
 
                 val request = Request.Builder()
-                    .url("https://api-ms-stage.direct4.me/sandbox/v1/Access/openbox")
+                    .url(getString(R.string.direct4meopenbox))
                     .addHeader("Authorization", "Bearer " + token)
                     .post(payload.toRequestBody(MEDIA_TYPE_JSON))
                     .build()
