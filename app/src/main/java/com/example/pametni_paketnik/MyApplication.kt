@@ -52,10 +52,16 @@ class MyApplication: Application() {
         return LoggedInUserView(
             sharedPreferences.getString("id", "")!!,
             sharedPreferences.getString("username", "")!!,
+            sharedPreferences.getString("accesstoken", "")!!,
             sharedPreferences.getString("name", "")!!,
             sharedPreferences.getString("lastname", "")!!,
-            sharedPreferences.getString("email", "")!!,
-            sharedPreferences.getString("accesstoken", "")!!
+            sharedPreferences.getString("email", "")!!
         )
+    }
+    fun saveAccessToken(accessToken: String) {
+        with(sharedPreferences.edit()) {
+            putString("accessToken", accessToken)
+            apply()
+        }
     }
 }

@@ -14,14 +14,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.lifecycle.get
+import androidx.navigation.fragment.findNavController
 import com.example.pametni_paketnik.MyApplication
 import com.example.pametni_paketnik.databinding.FragmentLoginBinding
 
 import com.example.pametni_paketnik.R
+import com.example.pametni_paketnik.UserViewModel
+import com.example.pametni_paketnik.data.model.LoggedInUser
 
 class LoginFragment : Fragment() {
 
     private lateinit var loginViewModel: LoginViewModel
+    private lateinit var userViewModel: UserViewModel
     private var _binding: FragmentLoginBinding? = null
     private lateinit var app: MyApplication
 
@@ -44,6 +49,7 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
+        userViewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
         app = requireActivity().application as MyApplication
 
         val usernameEditText = binding.username
@@ -115,13 +121,15 @@ class LoginFragment : Fragment() {
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = getString(R.string.welcome) + model.name
+        val welcome = getString(R.string.welcome) + " " + model.name
         // TODO : initiate successful logged in experience
         val appContext = context?.applicationContext ?: return
 
-        app.saveLoggedInUser(model)
+        val loggedInUser = LoggedInUser(model.id, model.username, model.accesstoken, model.name, model.lastname, model.email)
+        app.saveAccessToken(model.accesstoken)
+        userViewModel.userLoggedIn(loggedInUser)
         Toast.makeText(appContext, welcome, Toast.LENGTH_LONG).show()
-        Toast.makeText(appContext, "${app.sharedPreferences.getString("accesstoken", "")}", Toast.LENGTH_LONG).show()
+        findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {

@@ -9,6 +9,9 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
+import com.example.pametni_paketnik.data.model.LoggedInUser
 import com.example.pametni_paketnik.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
