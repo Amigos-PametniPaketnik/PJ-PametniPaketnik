@@ -13,10 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
 import android.widget.Toast
+import com.example.pametni_paketnik.MyApplication
 import com.example.pametni_paketnik.databinding.FragmentLoginBinding
 
 import com.example.pametni_paketnik.R
@@ -25,6 +23,7 @@ class LoginFragment : Fragment() {
 
     private lateinit var loginViewModel: LoginViewModel
     private var _binding: FragmentLoginBinding? = null
+    private lateinit var app: MyApplication
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -45,6 +44,7 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
+        app = requireActivity().application as MyApplication
 
         val usernameEditText = binding.username
         val passwordEditText = binding.password
@@ -118,19 +118,10 @@ class LoginFragment : Fragment() {
         val welcome = getString(R.string.welcome) + model.name
         // TODO : initiate successful logged in experience
         val appContext = context?.applicationContext ?: return
-        val MY_SP_FILE_NAME = "loggeduser.data"
-        var sharedPref : SharedPreferences = appContext.getSharedPreferences(MY_SP_FILE_NAME, Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putString("id", model.id)
-            putString("username", model.username)
-            putString("name", model.name)
-            putString("lastname", model.lastname)
-            putString("email", model.email)
-            putString("accesstoken", model.accesstoken)
-            apply()
-        }
+
+        app.saveLoggedInUser(model)
         Toast.makeText(appContext, welcome, Toast.LENGTH_LONG).show()
-        Toast.makeText(appContext, "${sharedPref.getString("accesstoken", "")}", Toast.LENGTH_LONG).show()
+        Toast.makeText(appContext, "${app.sharedPreferences.getString("accesstoken", "")}", Toast.LENGTH_LONG).show()
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {
