@@ -1,23 +1,15 @@
 package com.example.pametni_paketnik
 
 import android.app.AlertDialog
-import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
-import android.media.AudioAttributes
 import android.os.Bundle
-import android.os.Environment
 import android.util.Base64
-import android.util.Base64.decode
-import android.util.JsonReader
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.pametni_paketnik.databinding.FragmentFirstBinding
-import com.example.pametni_paketnik.util.ApiRequest
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -28,6 +20,10 @@ import java.io.IOException
 import java.io.FileOutputStream
 import android.media.MediaPlayer
 import android.net.Uri
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -45,9 +41,11 @@ import java.io.FileInputStream
  */
 
 
-class FirstFragment : Fragment() {
+class OpenBoxFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
+    private lateinit var openBoxViewModel: OpenBoxViewModel
+    private lateinit var userViewModel: UserViewModel
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -67,6 +65,25 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lateinit var data: String
+        openBoxViewModel = ViewModelProvider(this).get(OpenBoxViewModel::class.java)
+        userViewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
+
+        openBoxViewModel.getTokenResult.observe(viewLifecycleOwner, Observer { getTokenResult ->
+            getTokenResult ?: return@Observer
+            //loadingProgressBar.visibility = View.GONE
+            getTokenResult.error?.let {
+                //showLoginFailed(it)
+            }
+            getTokenResult.success?.let {
+                playToken(it)
+            }
+        })
+        openBoxViewModel.idParcelLocker.observe(viewLifecycleOwner, Observer {
+            if (it != null)
+                openBoxViewModel.openBox(it)
+            else
+                Toast.makeText(requireContext(), "Nimate dovoljenja za odpiranje tega paketnika!", Toast.LENGTH_LONG).show()
+        })
 
         if (arguments?.containsKey("scan") == true) {
             try {
@@ -87,87 +104,9 @@ class FirstFragment : Fragment() {
     }
 
     fun getTokenForParcelLocker(boxId: String) {
-        Thread(Runnable {
-            try {
-                val client = OkHttpClient()
-                val token = "9ea96945-3a37-4638-a5d4-22e89fbc998f"
-                val MEDIA_TYPE_JSON = "application/json; charset=utf-8".toMediaType()
-
-                val payload = """{"boxId" : "000542", "tokenFormat" : 2}"""
-
-                val request = Request.Builder()
-                    .url(getString(R.string.direct4meopenbox))
-                    .addHeader("Authorization", "Bearer " + token)
-                    .post(payload.toRequestBody(MEDIA_TYPE_JSON))
-                    .build()
-
-                client.newCall(request).execute().use { response ->
-                    if (!response.isSuccessful) throw IOException("Error occured in API request. Code: $response")
-
-                    val responseData = response.body!!.string()
-                    val jsonObject = JSONObject(responseData)
-                    val boxToken =
-                        jsonObject.getString("data") // Here is token base64 encoded and zipped token for playing to open a box
-
-                    val boxTokenBytes: ByteArray = Base64.decode(boxToken, Base64.DEFAULT)
-                    var fileNameZip = writeBytesAsZip(boxTokenBytes)
-                    var SoundFileName = unzip(
-                        "/data/data/com.example.pametni_paketnik/token/" + fileNameZip,
-                        "/data/data/com.example.pametni_paketnik/token"
-                    )
-
-                    //activity?.runOnUiThread { Toast.makeText(this.requireContext(), "Received from Direct4me: $boxToken", Toast.LENGTH_LONG).show() }
-                    playToken(SoundFileName);
-
-                }
-            }
-            catch (e: Exception) {
-                activity?.runOnUiThread { Snackbar.make(this.requireView(), "${e.message}", Snackbar.LENGTH_LONG).show() }
-            }
-        }).start()
-    }
-    fun unzip(_zipFile: String?, _targetLocation: String):String {
-
-        //create target location folder if not exist
-        val f = File(_targetLocation)
-        if(!f.isDirectory()){
-            f.mkdir()
-        }
-        try {
-            val fin = FileInputStream(_zipFile)
-            val zin = ZipInputStream(fin)
-            var ze: ZipEntry? = null
-            val path = File("/data/data/com.example.pametni_paketnik/token")
-            var file = File.createTempFile("token",".wav", path)
-            while (zin.nextEntry.also { ze = it } != null) {
-                    val fout = FileOutputStream(file)
-                    var c = zin.read()
-                    while (c != -1) {
-                        fout.write(c)
-                        c = zin.read()
-                    }
-                    zin.closeEntry()
-                    fout.close()
-            }
-            zin.close()
-            return file.name
-        } catch (e: Exception) {
-            println("unzip error: "+ e)
-        }
-        return ""
-    }
-
-    fun writeBytesAsZip(bytes : ByteArray):String {
-        val path = File("/data/data/com.example.pametni_paketnik/token")
-        if(!path.isDirectory()){
-            path.mkdir()
-        }
-
-        var file = File.createTempFile("token",".zip", path) // unzip base64 decoded token
-        var os = FileOutputStream(file);
-        os.write(bytes);
-        os.close();
-        return file.name
+        val user =  userViewModel.user.value
+        var splitBoxId = boxId.split('/')[1]
+        openBoxViewModel.checkOpenerPremission(user!!, splitBoxId)
     }
 
     private var mediaPlayer: MediaPlayer? = null

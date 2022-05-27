@@ -127,6 +127,7 @@ class LoginFragment : Fragment() {
 
         val loggedInUser = LoggedInUser(model.id, model.username, model.accesstoken, model.name, model.lastname, model.email)
         app.saveAccessToken(model.accesstoken)
+        app.saveUserID(model.id)
         userViewModel.userLoggedIn(loggedInUser)
         Toast.makeText(appContext, welcome, Toast.LENGTH_LONG).show()
         findNavController().navigate(R.id.action_loginFragment_to_profileFragment)

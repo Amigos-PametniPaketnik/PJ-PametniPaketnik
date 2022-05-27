@@ -57,6 +57,10 @@ class ProfileFragment : Fragment() {
             else
                 findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         })
+
+        binding.buttonOpenBox.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_FirstFragment)
+        }
     }
 
 }

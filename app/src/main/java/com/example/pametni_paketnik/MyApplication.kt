@@ -60,8 +60,20 @@ class MyApplication: Application() {
     }
     fun saveAccessToken(accessToken: String) {
         with(sharedPreferences.edit()) {
-            putString("accessToken", accessToken)
+            putString("AccessToken", accessToken)
             apply()
         }
+    }
+    fun getAccessToken(): String? {
+        return sharedPreferences.getString("AccessToken", null)
+    }
+    fun saveUserID(userId: String) {
+        with(sharedPreferences.edit()) {
+            putString("UserID", userId)
+            apply()
+        }
+    }
+    fun getUserID(): String? {
+        return sharedPreferences.getString("UserID", null)
     }
 }
