@@ -24,6 +24,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
+import com.example.pametni_paketnik.models.Unlocked
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -32,8 +33,7 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
 import java.io.FileInputStream
-
-
+import java.util.*
 
 
 /**
@@ -72,17 +72,11 @@ class OpenBoxFragment : Fragment() {
             getTokenResult ?: return@Observer
             //loadingProgressBar.visibility = View.GONE
             getTokenResult.error?.let {
-                //showLoginFailed(it)
+                Toast.makeText(requireContext(), "Nimate dovoljenja za odklep tega paketnika!", Toast.LENGTH_LONG).show()
             }
             getTokenResult.success?.let {
                 playToken(it)
             }
-        })
-        openBoxViewModel.idParcelLocker.observe(viewLifecycleOwner, Observer {
-            if (it != null)
-                openBoxViewModel.openBox(it)
-            else
-                Toast.makeText(requireContext(), "Nimate dovoljenja za odpiranje tega paketnika!", Toast.LENGTH_LONG).show()
         })
 
         if (arguments?.containsKey("scan") == true) {
@@ -106,7 +100,7 @@ class OpenBoxFragment : Fragment() {
     fun getTokenForParcelLocker(boxId: String) {
         val user =  userViewModel.user.value
         var splitBoxId = boxId.split('/')[1]
-        openBoxViewModel.checkOpenerPremission(user!!, splitBoxId)
+        openBoxViewModel.openBox(user!!, splitBoxId)
     }
 
     private var mediaPlayer: MediaPlayer? = null
@@ -119,8 +113,14 @@ class OpenBoxFragment : Fragment() {
                 val alertDialogBuilder = AlertDialog.Builder(requireContext())
                 alertDialogBuilder.setTitle("Package opening")
                 alertDialogBuilder.setMessage("Has the package opened?")
-                alertDialogBuilder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, id -> dialog.cancel()})
-                alertDialogBuilder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, id -> dialog.cancel() })
+                alertDialogBuilder.setPositiveButton("Yes", DialogInterface.OnClickListener {
+                        dialog, id -> dialog.cancel()
+                    openBoxViewModel.saveNewUnlock(Unlocked("", userViewModel.user.value!!.id, Date(), true, ""))
+                })
+                alertDialogBuilder.setNegativeButton("No", DialogInterface.OnClickListener {
+                        dialog, id -> dialog.cancel()
+                    openBoxViewModel.saveNewUnlock(Unlocked(openBoxViewModel.idParcelLocker.value!!, userViewModel.user.value!!.id, Date(), false, ""))
+                })
                 val alertDialog = alertDialogBuilder.create()
                 alertDialog.show()
             })

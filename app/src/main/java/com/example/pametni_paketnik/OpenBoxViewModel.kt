@@ -34,24 +34,40 @@ class OpenBoxViewModel(val _app: Application): AndroidViewModel(_app) {
     val saveUnlockResult: LiveData<SaveUnlockResult> = _saveUnlockResult
     private val _idParcelLocker = MutableLiveData<String?>(null)
     val idParcelLocker: LiveData<String?> = _idParcelLocker
+    private val _loggedUser = MutableLiveData<LoggedInUser>()
+    val loggedInUser: LiveData<LoggedInUser> = _loggedUser
 
-    fun openBox(scanedQrCode: String) {
+    fun openBox(user: LoggedInUser, parcelLocker: String) {
         viewModelScope.launch {
-            val result = try {
-                getTokenAndProcess(scanedQrCode)
-            }
-            catch (e: Exception) {
+            val authOpenerResult = try {
+                authenticateOpener(user, parcelLocker)
+            } catch (e: Exception) {
                 Result.Error(e)
             }
 
-            when(result) {
-                is Result.Success -> {
-                    _getTokenResult.value = GetTokenResult(success = result.data)
-                }
-                else -> {
-                    _getTokenResult.value = GetTokenResult(error = "Getting and processing of token failed!")
-                }
-            }
+           when(authOpenerResult) {
+               is Result.Success -> {
+                   _idParcelLocker.value = authOpenerResult.data.getString("_id")
+                   val result = try {
+                       getTokenAndProcess(parcelLocker)
+                   }
+                   catch (e: Exception) {
+                       Result.Error(e)
+                   }
+
+                   when(result) {
+                       is Result.Success -> {
+                           _getTokenResult.value = GetTokenResult(success = result.data)
+                       }
+                       else -> {
+                           _getTokenResult.value = GetTokenResult(error = "Getting and processing of token failed!")
+                       }
+                   }
+               }
+               else -> {
+                   _getTokenResult.value = GetTokenResult(error = "You don't have permission to open this box")
+               }
+           }
         }
     }
 
@@ -171,7 +187,8 @@ class OpenBoxViewModel(val _app: Application): AndroidViewModel(_app) {
                 val token = app.getAccessToken()
                 val MEDIA_TYPE_JSON = "application/json; charset=utf-8".toMediaType()
 
-                val payload = """{"idParcelLocker" : "${unlocked.idParcelLocker}", "idUser" : "${unlocked.idUser}", "opened" : ${unlocked.opened}}"""
+                val payload = """{"idParcelLocker" : "${_idParcelLocker.value}", "idUser" : "${unlocked.idUser}", "opened" : ${unlocked.opened}}"""
+                Log.e("Payload: ", payload)
 
                 val request = Request.Builder()
                     .url("http://192.168.1.104:3001/api/unlocks")
@@ -206,7 +223,7 @@ class OpenBoxViewModel(val _app: Application): AndroidViewModel(_app) {
             when(result) {
                 is Result.Success -> {
                     _authOpener.value = true
-                    _idParcelLocker.value = result.data.getString("numberParcelLocker")
+                    _idParcelLocker.value = result.data.getString("_id")
                 }
                 else -> {
                     _authOpener.value = false
@@ -244,5 +261,8 @@ class OpenBoxViewModel(val _app: Application): AndroidViewModel(_app) {
                 return@withContext Result.Error(IOException(e.message))
             }
         }
+    }
+    fun setLoggedUser(loggedInUser: LoggedInUser) {
+        _loggedUser.value = loggedInUser
     }
 }
