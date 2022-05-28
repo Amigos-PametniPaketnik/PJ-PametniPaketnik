@@ -82,6 +82,10 @@ class LoginFragment : Fragment() {
                     updateUiWithUser(it)
                 }
             })
+        binding.login2.isEnabled
+        binding.login2.setOnClickListener{
+            findNavController().navigate(R.id.action_loginFragment_to_PictureFragment)
+        }
 
         val afterTextChangedListener = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -142,4 +146,6 @@ class LoginFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }

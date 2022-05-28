@@ -60,13 +60,13 @@ class PictureFragment : Fragment() {
                 val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 photoFile = getPhotoFile(FILE_NAME)
 
-                val fileProvider = FileProvider.getUriForFile(this.requireContext(), "com.example.android.fileprovider", photoFile)
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+               val fileProvider = FileProvider.getUriForFile(this.requireContext(), "com.example.android.fileprovider", photoFile)
+               takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
 
                 if (takePictureIntent.resolveActivity(this.requireContext().packageManager) != null) {
-                  startActivityForResult(takePictureIntent, REQUEST_CODE)
+                  requireActivity().startActivityForResult(takePictureIntent, REQUEST_CODE)
                     val bundle = bundleOf("image" to takePictureIntent)
-                    findNavController().navigate(R.id.action_PictureFragment_to_FirstFragment, bundle)
+                    findNavController().navigate(R.id.action_PictureFragment_to_FirstFragment)
                 }
             } else {
                 Toast.makeText(

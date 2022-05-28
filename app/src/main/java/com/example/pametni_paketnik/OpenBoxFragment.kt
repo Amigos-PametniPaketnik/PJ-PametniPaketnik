@@ -1,7 +1,11 @@
 package com.example.pametni_paketnik
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
 import androidx.fragment.app.Fragment
@@ -41,8 +45,8 @@ import java.util.*
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-
-
+private lateinit var photoFile: File
+private const val REQUEST_CODE = 42
 class OpenBoxFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
@@ -91,8 +95,29 @@ class OpenBoxFragment : Fragment() {
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
-    }
 
+     //   var bundle :Bundle ?=intent.extras
+      //  var message = bundle!!.getString("value") // 1
+
+
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode==REQUEST_CODE){
+            var pic:Bitmap? =data?.getParcelableExtra<Bitmap>("data")
+            binding.imageView.setImageBitmap(pic)
+        }
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+
+            val takenImage = data?.extras?.get("data") as Bitmap
+          //     val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
+              binding.imageView.setImageBitmap(takenImage)
+            val bundle = bundleOf("image" to takenImage)
+            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment, bundle)
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

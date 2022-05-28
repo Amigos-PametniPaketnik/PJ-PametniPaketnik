@@ -37,6 +37,10 @@
             android:id="@+id/action_loginFragment_to_profileFragment"
             app:destination="@id/profileFragment"
             app:launchSingleTop="true"/>
+        <action
+            android:id="@+id/action_loginFragment_to_PictureFragment"
+            app:destination="@id/PictureFragment"
+            app:launchSingleTop="true"/>
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
