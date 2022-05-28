@@ -20,7 +20,9 @@ import java.io.IOException
 import java.io.FileOutputStream
 import android.media.MediaPlayer
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
@@ -69,12 +71,11 @@ class OpenBoxFragment : Fragment() {
         userViewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
 
         openBoxViewModel.getTokenResult.observe(viewLifecycleOwner, Observer { getTokenResult ->
-            getTokenResult ?: return@Observer
             //loadingProgressBar.visibility = View.GONE
-            getTokenResult.error?.let {
+            getTokenResult?.error?.let {
                 Toast.makeText(requireContext(), "Nimate dovoljenja za odklep tega paketnika!", Toast.LENGTH_LONG).show()
             }
-            getTokenResult.success?.let {
+            getTokenResult?.success?.let {
                 playToken(it)
             }
         })
@@ -110,12 +111,30 @@ class OpenBoxFragment : Fragment() {
             println(tokenPath)
             mediaPlayer = MediaPlayer.create(requireContext(), Uri.parse("/data/data/com.example.pametni_paketnik/token/$tokenPath")) //get base64 decoded and unziped wav token
             mediaPlayer!!.setOnCompletionListener(MediaPlayer.OnCompletionListener { // When playback of token is over ask user if his box has opened
+                openBoxViewModel.onPlayingTokenFinished()
+                arguments = null
                 val alertDialogBuilder = AlertDialog.Builder(requireContext())
                 alertDialogBuilder.setTitle("Package opening")
                 alertDialogBuilder.setMessage("Has the package opened?")
-                alertDialogBuilder.setPositiveButton("Yes", DialogInterface.OnClickListener {
-                        dialog, id -> dialog.cancel()
-                    openBoxViewModel.saveNewUnlock(Unlocked("", userViewModel.user.value!!.id, Date(), true, ""))
+                alertDialogBuilder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, id ->
+                    dialog.cancel()
+                    openBoxViewModel.saveNewUnlock(
+                        Unlocked(
+                            "",
+                            userViewModel.user.value!!.id,
+                            Date(),
+                            true,
+                            ""
+                        )
+                    )
+                    val bundle = bundleOf(
+                        "idParcelLocker" to openBoxViewModel.idParcelLocker.value,
+                        "numberParcelLocker" to "000542"
+                    )
+                    findNavController().navigate(
+                        R.id.action_FirstFragment_to_unlocksFragment,
+                        bundle
+                    )
                 })
                 alertDialogBuilder.setNegativeButton("No", DialogInterface.OnClickListener {
                         dialog, id -> dialog.cancel()

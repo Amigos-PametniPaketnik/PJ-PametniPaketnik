@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_unlocksFragment"
+            app:destination="@id/unlocksFragment" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
@@ -46,5 +49,14 @@
         <action
             android:id="@+id/action_profileFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/unlocksFragment"
+        android:name="com.example.pametni_paketnik.UnlocksFragment"
+        android:label="fragment_unlocks"
+        tools:layout="@layout/fragment_unlocks" >
+        <action
+            android:id="@+id/action_unlocksFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 </navigation>

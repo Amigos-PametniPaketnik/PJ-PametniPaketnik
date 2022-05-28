@@ -26,14 +26,16 @@ import java.util.zip.ZipInputStream
 
 class OpenBoxViewModel(val _app: Application): AndroidViewModel(_app) {
     val app = _app as MyApplication
-    private val _getTokenResult = MutableLiveData<GetTokenResult>()
-    val getTokenResult: LiveData<GetTokenResult> = _getTokenResult
+    private val _getTokenResult = MutableLiveData<GetTokenResult?>(null)
+    val getTokenResult: LiveData<GetTokenResult?>
+        get() = _getTokenResult
     private val _saveUnlockResult = MutableLiveData<SaveUnlockResult>()
     private val _authOpener = MutableLiveData<Boolean?>(null)
     val authOpener: LiveData<Boolean?> = _authOpener
     val saveUnlockResult: LiveData<SaveUnlockResult> = _saveUnlockResult
     private val _idParcelLocker = MutableLiveData<String?>(null)
-    val idParcelLocker: LiveData<String?> = _idParcelLocker
+    val idParcelLocker: LiveData<String?>
+        get() = _idParcelLocker
     private val _loggedUser = MutableLiveData<LoggedInUser>()
     val loggedInUser: LiveData<LoggedInUser> = _loggedUser
 
@@ -211,28 +213,6 @@ class OpenBoxViewModel(val _app: Application): AndroidViewModel(_app) {
         }
     }
 
-    fun checkOpenerPremission(user: LoggedInUser, parcelLocker: String) {
-        viewModelScope.launch {
-            val result = try {
-                authenticateOpener(user, parcelLocker)
-            }
-            catch (e: Exception) {
-                Result.Error(e)
-            }
-
-            when(result) {
-                is Result.Success -> {
-                    _authOpener.value = true
-                    _idParcelLocker.value = result.data.getString("_id")
-                }
-                else -> {
-                    _authOpener.value = false
-                    _idParcelLocker.value = null
-                }
-            }
-        }
-    }
-
     private suspend fun authenticateOpener(user: LoggedInUser, parcelLocker: String): Result<JSONObject> {
         return withContext(Dispatchers.IO) {
             try {
@@ -264,5 +244,8 @@ class OpenBoxViewModel(val _app: Application): AndroidViewModel(_app) {
     }
     fun setLoggedUser(loggedInUser: LoggedInUser) {
         _loggedUser.value = loggedInUser
+    }
+    fun onPlayingTokenFinished() {
+        _getTokenResult.value = null
     }
 }
