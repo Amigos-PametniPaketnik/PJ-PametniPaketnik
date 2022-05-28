@@ -18,4 +18,5 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be longer than 3 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="picture_fragment_label">Login</string>
 </resources>
