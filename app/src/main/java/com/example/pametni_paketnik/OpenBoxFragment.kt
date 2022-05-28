@@ -96,28 +96,10 @@ class OpenBoxFragment : Fragment() {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
 
-     //   var bundle :Bundle ?=intent.extras
-      //  var message = bundle!!.getString("value") // 1
 
 
     }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode==REQUEST_CODE){
-            var pic:Bitmap? =data?.getParcelableExtra<Bitmap>("data")
-            binding.imageView.setImageBitmap(pic)
-        }
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
 
-            val takenImage = data?.extras?.get("data") as Bitmap
-          //     val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
-              binding.imageView.setImageBitmap(takenImage)
-            val bundle = bundleOf("image" to takenImage)
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment, bundle)
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

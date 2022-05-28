@@ -26,8 +26,9 @@ import java.io.File
 import android.content.ContentValues
 
 import android.net.Uri
-
-
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat.startActivityForResult
+import id.zelory.compressor.Compressor
 
 
 private const val FILE_NAME = "photo"
@@ -61,12 +62,11 @@ class PictureFragment : Fragment() {
                 photoFile = getPhotoFile(FILE_NAME)
 
                val fileProvider = FileProvider.getUriForFile(this.requireContext(), "com.example.android.fileprovider", photoFile)
-               takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+               takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider) //comment this and result line for lower quality image
 
                 if (takePictureIntent.resolveActivity(this.requireContext().packageManager) != null) {
-                  requireActivity().startActivityForResult(takePictureIntent, REQUEST_CODE)
-                    val bundle = bundleOf("image" to takePictureIntent)
-                    findNavController().navigate(R.id.action_PictureFragment_to_FirstFragment)
+                    resultLauncher.launch(takePictureIntent)
+                  //  findNavController().navigate(R.id.action_PictureFragment_to_FirstFragment)
                 }
             } else {
                 Toast.makeText(
@@ -78,20 +78,17 @@ class PictureFragment : Fragment() {
 
 
     }
-/*
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val takenImage = data?.extras?.get("data") as Bitmap
-            //   val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
-          //  binding.imageView.setImageBitmap(takenImage)
-            val bundle = bundleOf("image" to takenImage)
-            findNavController().navigate(R.id.action_PictureFragment_to_FirstFragment, bundle)
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+          //  val data: Bitmap = result.data?.extras?.get("data") as Bitmap
+            val data = BitmapFactory.decodeFile(photoFile.absolutePath) //comment this and use above line for lower quality image
+            binding.imageView2.setImageBitmap(data)
         }
-
+        else{
+            findNavController().navigate(R.id.action_PictureFragment_to_FirstFragment)
+        }
     }
-*/
+
     private fun getPhotoFile(fileName: String): File {
         val storageDirectory = this.requireContext()?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(fileName, ".jpg",storageDirectory)
