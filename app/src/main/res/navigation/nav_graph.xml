@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_ParcelLockerMapFragment"
+            app:destination="@id/ParcelLockerMapFragment" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
@@ -25,4 +28,14 @@
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/ParcelLockerMapFragment"
+        android:name="com.example.pametni_paketnik.ParcelLockerMapFragment"
+        android:label="@string/fragment_parcel_locker_map_label"
+        tools:layout="@layout/fragment_parcel_locker_map">
+
+
+    </fragment>
+
+    action_FirstFragment_to_ParcelLockerMapFragment
 </navigation>

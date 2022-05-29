@@ -79,6 +79,9 @@ class FirstFragment : Fragment() {
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
+        binding.Map.setOnClickListener {
+            findNavController().navigate(R.id.action_FirstFragment_to_ParcelLockerMapFragment)
+        }
     }
 
     override fun onDestroyView() {
