@@ -10,6 +10,6 @@ class ParcelLocker (
     var city  :String,
     var address  :String,
     var postal  :Int,
-    var location:String,
+    var location:MutableList<String>,
     var owner:String,
     val id:String ) {}
