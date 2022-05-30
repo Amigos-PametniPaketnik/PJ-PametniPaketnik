@@ -28,6 +28,8 @@ import android.content.ContentValues
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import id.zelory.compressor.Compressor
 
 
@@ -39,6 +41,7 @@ private lateinit var photoFile: File
  */
 class PictureFragment : Fragment() {
     private var _binding: FragmentPictureBinding? = null
+    private lateinit var biometricLoginViewModel: BiometricLoginViewModel
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -55,7 +58,21 @@ class PictureFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        biometricLoginViewModel = ViewModelProvider(this).get(BiometricLoginViewModel::class.java)
 
+        biometricLoginViewModel.resultPostPhoto.observe(viewLifecycleOwner, Observer { result ->
+            binding.progressBar.visibility = View.GONE
+            when(result) {
+                (true) -> {
+                    Toast.makeText(requireContext(), "Slika je bila uspešno poslana!", Toast.LENGTH_LONG).show()
+                    findNavController().navigate(R.id.action_PictureFragment_to_FirstFragment)
+                }
+                (false) -> {
+                    Toast.makeText(requireContext(), "Prišlo je do napake pri pošiljanju slike!", Toast.LENGTH_LONG).show()
+                    findNavController().navigate(R.id.action_PictureFragment_to_FirstFragment)
+                }
+            }
+        })
 
             if (allPermissionsGranted()) {
                 val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -75,14 +92,14 @@ class PictureFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-
-
     }
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-          //  val data: Bitmap = result.data?.extras?.get("data") as Bitmap
+          //val data: Bitmap = result.data?.extras?.get("data") as Bitmap
             val data = BitmapFactory.decodeFile(photoFile.absolutePath) //comment this and use above line for lower quality image
-            binding.imageView2.setImageBitmap(data)
+            biometricLoginViewModel.authenticateWithPhoto(photoFile)
+            binding.progressBar.visibility = View.VISIBLE
+            //binding.imageView2.setImageBitmap(data)
         }
         else{
             findNavController().navigate(R.id.action_PictureFragment_to_FirstFragment)
