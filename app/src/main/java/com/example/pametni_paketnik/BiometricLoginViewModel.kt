@@ -49,6 +49,7 @@ class BiometricLoginViewModel(val _app: Application): AndroidViewModel(_app) {
 
                 val body: RequestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
                     .addFormDataPart("authtype", "biometric")
+                    .addFormDataPart("label", "0") // Set label for train set -> Anej: 0, Alen: 1, Niko: 2
                     .addFormDataPart("photo", photo.name, compressedPhoto.asRequestBody(MEDIA_TYPE_PNG))
                     .build()
 
