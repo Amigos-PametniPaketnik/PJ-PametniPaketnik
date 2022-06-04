@@ -19,4 +19,6 @@
     <string name="invalid_password">Password must be longer than 3 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="picture_fragment_label">Login</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

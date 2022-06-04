@@ -66,12 +66,15 @@
 
     <fragment
         android:id="@+id/PictureFragment"
-        android:name="com.example.pametni_paketnik.PictureFragment"
+        android:name="com.example.pametni_paketnik.BiometricLoginFragment"
         android:label="@string/picture_fragment_label"
         tools:layout="@layout/fragment_picture">
 
         <action
             android:id="@+id/action_PictureFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_PictureFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 </navigation>
