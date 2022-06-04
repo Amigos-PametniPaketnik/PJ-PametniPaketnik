@@ -140,7 +140,7 @@ class BiometricLoginFragment : Fragment() {
         app.saveUserID(model.id)
         userViewModel.userLoggedIn(loggedInUser)
         Toast.makeText(appContext, welcome, Toast.LENGTH_LONG).show()
-        findNavController().navigate(R.id.action_PictureFragment_to_profileFragment)
+        findNavController().navigate(R.id.action_PictureFragment_to_menuFragment)
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {

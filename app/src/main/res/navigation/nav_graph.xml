@@ -19,6 +19,22 @@
             app:destination="@id/unlocksFragment" />
     </fragment>
     <fragment
+        android:id="@+id/MenuFragment"
+        android:name="com.example.pametni_paketnik.MenuFragment"
+        android:label="@string/menu_fragment_label"
+        tools:layout="@layout/fragment_menu">
+
+        <action
+            android:id="@+id/action_MenuFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_MenuFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_MenuFragment_to_MapFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
         android:id="@+id/SecondFragment"
         android:name="com.example.pametni_paketnik.ScanQRCodeFragment"
         android:label="@string/second_fragment_label"
@@ -79,5 +95,8 @@
         <action
             android:id="@+id/action_PictureFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_PictureFragment_to_menuFragment"
+            app:destination="@id/MenuFragment" />
     </fragment>
 </navigation>
