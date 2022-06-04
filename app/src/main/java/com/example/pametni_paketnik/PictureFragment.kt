@@ -42,7 +42,7 @@ private lateinit var photoFile: File
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class PictureFragment : Fragment() {
+class BiometricLoginFragment : Fragment() {
     private var _binding: FragmentPictureBinding? = null
     private lateinit var biometricLoginViewModel: BiometricLoginViewModel
     private lateinit var userViewModel: UserViewModel

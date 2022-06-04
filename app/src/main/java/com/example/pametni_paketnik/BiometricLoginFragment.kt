@@ -39,7 +39,7 @@ private lateinit var photoFile: File
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class BiometricLoginFragment : Fragment() {
+class PictureFragment : Fragment() {
     private var _binding: FragmentPictureBinding? = null
     private lateinit var biometricLoginViewModel: BiometricLoginViewModel
 
@@ -99,6 +99,7 @@ class BiometricLoginFragment : Fragment() {
             val data = BitmapFactory.decodeFile(photoFile.absolutePath) //comment this and use above line for lower quality image
             biometricLoginViewModel.authenticateWithPhoto(photoFile)
             binding.progressBar.visibility = View.VISIBLE
+            Toast.makeText(requireContext(), "Poteka indentifikacija na podlagi slike...", Toast.LENGTH_LONG).show()
             //binding.imageView2.setImageBitmap(data)
         }
         else{
