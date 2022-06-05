@@ -6,61 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".ParcelLockerMapFragment">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewParcelLockers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/map" />
+
     <org.osmdroid.views.MapView
         android:id="@+id/map"
         tilesource="Mapnik"
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        android:layout_height="500dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></org.osmdroid.views.MapView>
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Lat:" />
-
-            <TextView
-                android:id="@+id/tvLat"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:text="\?"
-                android:textAlignment="center" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Lon:" />
-
-            <TextView
-                android:id="@+id/tvLon"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:text="\?"
-                android:textAlignment="center" />
-        </LinearLayout>
-
-
-
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

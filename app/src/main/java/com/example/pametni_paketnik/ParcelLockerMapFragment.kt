@@ -14,6 +14,11 @@ import android.content.*
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Looper
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pametni_paketnik.databinding.FragmentParcelLockerMapBinding
 import com.example.pametni_paketnik.models.ParcelLocker
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -73,6 +78,8 @@ class ParcelLockerMapFragment : Fragment() {
     var marker: Marker? = null
     private var _binding: FragmentParcelLockerMapBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: ParcelLockerMapViewModel
+    private lateinit var adapter: RecyclerView.Adapter<ParcelLockersAdapter.ViewHolder>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -87,6 +94,7 @@ class ParcelLockerMapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this).get(ParcelLockerMapViewModel::class.java)
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
@@ -110,7 +118,7 @@ class ParcelLockerMapFragment : Fragment() {
         )
         mapController.setCenter(startPoint)
         activityResultLauncher.launch(appPerms)
-
+        viewModel.loadParcelLockers();
     }
     override fun onResume() {
         super.onResume()
@@ -167,8 +175,6 @@ class ParcelLockerMapFragment : Fragment() {
 
     fun updateLocation(newLocation: Location) {
         lastLoction = newLocation
-        binding.tvLat.setText(newLocation.latitude.toString())
-        binding.tvLon.setText(newLocation.longitude.toString())
         startPoint.longitude = newLocation.longitude
         startPoint.latitude = newLocation.latitude
         mapController.setCenter(startPoint)
@@ -180,7 +186,34 @@ class ParcelLockerMapFragment : Fragment() {
 
     fun initMap() {
         initLoaction()
-        onClickDraw1()
+
+        viewModel.parcelLockers.observe(viewLifecycleOwner, Observer { parcelLockers ->
+            Toast.makeText(requireContext(), "V seznamu je ${parcelLockers.size} paketnikov!", Toast.LENGTH_LONG).show()
+            for(i in parcelLockers){
+                var startPoint1: GeoPoint = GeoPoint(46.554650, 15.645881);
+                val markerInstructor:Marker
+                markerInstructor=Marker(map)
+                markerInstructor!!.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                startPoint1.latitude =i.location[0].toDouble()
+                startPoint1.longitude=i.location[1].toDouble()
+                markerInstructor!!.position=startPoint1
+                markerInstructor.title="Ime: "+i.name + "\nŠtevilka paketnika: " + i.numberParcelLocker+ "\nOpis: "+i.description+"\nNaslov: "+i.address+"\nMesto: "+i.city+"\nPoštna številka: "+i.postal
+                map.overlays.add(markerInstructor)
+            }
+            adapter = ParcelLockersAdapter(parcelLockers, object: ParcelLockersAdapter.MyOnClick {
+                override fun onClick(p0: View?, position: Int) {
+                    Toast.makeText(requireContext(), "Short Click!", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onLongClick(p0: View?, position: Int) {
+                    Toast.makeText(requireContext(), "Long click!", Toast.LENGTH_SHORT).show()
+                }
+            })
+            binding.recyclerViewParcelLockers.adapter = adapter
+            binding.recyclerViewParcelLockers.layoutManager = LinearLayoutManager(requireContext())
+            map.invalidate()
+        })
+
         if (!requestingLocationUpdates) {
             requestingLocationUpdates = true
             startLocationUpdates()
@@ -202,32 +235,6 @@ class ParcelLockerMapFragment : Fragment() {
         return marker!!
     }
 
-    fun onClickDraw1() {
-        startPoint.latitude =46.554650
-        startPoint.longitude=15.645881
-        mapController.setCenter(startPoint)
-        getPositionMarker().position = startPoint
-        val locations = mutableListOf<String>()
-        locations.add(startPoint.latitude.toString())
-        locations.add(startPoint.longitude.toString())
-        var parcelLocker1Test=ParcelLocker("111","Lep","Zelo","Lenart","bela ulica1",2230,locations,"132","1")
-      var ParcelLockersTest:MutableList<ParcelLocker> = mutableListOf<ParcelLocker>()
-        ParcelLockersTest.add( parcelLocker1Test)
-
-        for(i in ParcelLockersTest){
-            var startPoint1: GeoPoint = GeoPoint(46.554650, 15.645881);
-            val markerInstructor:Marker
-            markerInstructor=Marker(map)
-            markerInstructor!!.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            startPoint1.latitude =i.location[0].toDouble()
-            startPoint1.longitude=i.location[1].toDouble()
-            markerInstructor!!.position=startPoint1
-            markerInstructor.title="Ime: "+i.name + "\nŠtevilka paketnika: " + i.numberParcelLocker+ "\nOpis: "+i.description+"\nNaslov: "+i.address+"\nMesto: "+i.city+"\nPoštna številka: "+i.postal
-            map.overlays.add(markerInstructor)
-        }
-
-        map.invalidate()
-    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
