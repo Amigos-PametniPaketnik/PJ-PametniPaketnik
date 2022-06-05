@@ -19,4 +19,7 @@
     <string name="invalid_password">Geslo mora biti daljše od 3 znakov</string>
     <string name="login_failed">"Neuspešen vpis"</string>
     <string name="picture_fragment_label">Vpiši se</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_fragment_label" />
 </resources>
