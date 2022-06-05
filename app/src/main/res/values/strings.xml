@@ -1,22 +1,22 @@
 <resources>
     <string name="app_name">Pametni_paketnik</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Nastavitve</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">Unlock parcel locker</string>
-    <string name="second_fragment_label">Scan parcel locker QR code</string>
-    <string name="next">Scan QR Code of locker</string>
-    <string name="previous">Previous</string>
+    <string name="first_fragment_label">Odkleni paketnik</string>
+    <string name="second_fragment_label">Poskeniraj QR kodo paketnika</string>
+    <string name="next">Poskeniraj QR kodo paketnika</string>
+    <string name="previous">Nazaj</string>
 
-    <string name="hello_first_fragment">Unlock your Direct4me parcel locker</string>
+    <string name="hello_first_fragment">Odklenite svoj Direct4me paketnik</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <!-- Strings related to login -->
-    <string name="prompt_username">Username</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
+    <string name="prompt_username">Uporabniško ime</string>
+    <string name="prompt_password">Geslo</string>
+    <string name="action_sign_in">Prijavi se</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome!"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be longer than 3 characters</string>
-    <string name="login_failed">"Login failed"</string>
-    <string name="picture_fragment_label">Login</string>
+    <string name="welcome">"Pozdravljeni!"</string>
+    <string name="invalid_username">Nepravilno uporabniško ime</string>
+    <string name="invalid_password">Geslo mora biti daljše od 3 znakov</string>
+    <string name="login_failed">"Neuspešen vpis"</string>
+    <string name="picture_fragment_label">Vpiši se</string>
 </resources>

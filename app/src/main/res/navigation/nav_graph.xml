@@ -31,7 +31,7 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.pametni_paketnik.ui.login.LoginFragment"
-        android:label="fragment_login"
+        android:label="Prijava"
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_profileFragment"
@@ -45,7 +45,7 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.pametni_paketnik.ProfileFragment"
-        android:label="fragment_profile"
+        android:label="Profil"
         tools:layout="@layout/fragment_profile" >
         <action
             android:id="@+id/action_profileFragment_to_loginFragment"
@@ -57,7 +57,7 @@
     <fragment
         android:id="@+id/unlocksFragment"
         android:name="com.example.pametni_paketnik.UnlocksFragment"
-        android:label="fragment_unlocks"
+        android:label="Odklepi paketnikov"
         tools:layout="@layout/fragment_unlocks" >
         <action
             android:id="@+id/action_unlocksFragment_to_profileFragment"
