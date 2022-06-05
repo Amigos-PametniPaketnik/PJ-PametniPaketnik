@@ -134,7 +134,7 @@ class LoginFragment : Fragment() {
         app.saveUserID(model.id)
         userViewModel.userLoggedIn(loggedInUser)
         Toast.makeText(appContext, welcome, Toast.LENGTH_LONG).show()
-        findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+        findNavController().navigate(R.id.action_loginFragment_to_MenuFragment)
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {

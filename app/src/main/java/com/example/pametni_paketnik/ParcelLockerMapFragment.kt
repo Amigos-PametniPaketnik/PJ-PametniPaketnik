@@ -15,8 +15,12 @@ import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Looper
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pametni_paketnik.databinding.FragmentParcelLockerMapBinding
@@ -80,6 +84,7 @@ class ParcelLockerMapFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: ParcelLockerMapViewModel
     private lateinit var adapter: RecyclerView.Adapter<ParcelLockersAdapter.ViewHolder>
+    private lateinit var navController: NavController
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,6 +100,7 @@ class ParcelLockerMapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(ParcelLockerMapViewModel::class.java)
+        navController = Navigation.findNavController(view)
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
@@ -119,6 +125,23 @@ class ParcelLockerMapFragment : Fragment() {
         mapController.setCenter(startPoint)
         activityResultLauncher.launch(appPerms)
         viewModel.loadParcelLockers();
+        viewModel.parcelLockers.observe(viewLifecycleOwner, Observer { parcelLockers ->
+            adapter = ParcelLockersAdapter(parcelLockers, object: ParcelLockersAdapter.MyOnClick {
+                override fun onClick(p0: View?, position: Int) {
+                    val bundle = bundleOf(
+                        "idParcelLocker" to parcelLockers[position].id,
+                        "numberParcelLocker" to "000542"
+                    )
+                    navController.navigate(R.id.action_ParcelLockerMapFragment_to_unlocksFragment, bundle)
+                }
+
+                override fun onLongClick(p0: View?, position: Int) {
+                    //
+                }
+            })
+            binding.recyclerViewParcelLockers.adapter = adapter
+            binding.recyclerViewParcelLockers.layoutManager = LinearLayoutManager(requireContext())
+        })
     }
     override fun onResume() {
         super.onResume()
@@ -188,7 +211,6 @@ class ParcelLockerMapFragment : Fragment() {
         initLoaction()
 
         viewModel.parcelLockers.observe(viewLifecycleOwner, Observer { parcelLockers ->
-            Toast.makeText(requireContext(), "V seznamu je ${parcelLockers.size} paketnikov!", Toast.LENGTH_LONG).show()
             for(i in parcelLockers){
                 var startPoint1: GeoPoint = GeoPoint(46.554650, 15.645881);
                 val markerInstructor:Marker
@@ -200,17 +222,6 @@ class ParcelLockerMapFragment : Fragment() {
                 markerInstructor.title="Ime: "+i.name + "\nŠtevilka paketnika: " + i.numberParcelLocker+ "\nOpis: "+i.description+"\nNaslov: "+i.address+"\nMesto: "+i.city+"\nPoštna številka: "+i.postal
                 map.overlays.add(markerInstructor)
             }
-            adapter = ParcelLockersAdapter(parcelLockers, object: ParcelLockersAdapter.MyOnClick {
-                override fun onClick(p0: View?, position: Int) {
-                    Toast.makeText(requireContext(), "Short Click!", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onLongClick(p0: View?, position: Int) {
-                    Toast.makeText(requireContext(), "Long click!", Toast.LENGTH_SHORT).show()
-                }
-            })
-            binding.recyclerViewParcelLockers.adapter = adapter
-            binding.recyclerViewParcelLockers.layoutManager = LinearLayoutManager(requireContext())
             map.invalidate()
         })
 

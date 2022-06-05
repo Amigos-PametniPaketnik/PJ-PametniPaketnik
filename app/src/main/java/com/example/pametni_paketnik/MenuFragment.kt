@@ -51,7 +51,7 @@ class MenuFragment : Fragment() {
 
 
         binding.buttonMap.setOnClickListener {
-            findNavController().navigate(R.id.action_MenuFragment_to_MapFragment)
+            findNavController().navigate(R.id.action_MenuFragment_to_ParcelLockerMapFragment)
         }
         binding.buttonProfile.setOnClickListener {
             findNavController().navigate(R.id.action_MenuFragment_to_profileFragment)

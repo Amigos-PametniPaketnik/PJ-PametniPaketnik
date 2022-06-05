@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_FirstFragment_to_ParcelLockerMapFragment"
             app:destination="@id/ParcelLockerMapFragment" />
+        <action
+            android:id="@+id/action_MenuFragment_to_ParcelLockerMapFragment"
+            app:destination="@id/ParcelLockerMapFragment" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
@@ -63,6 +66,12 @@
         <action
             android:id="@+id/action_loginFragment_to_PictureFragment2"
             app:destination="@id/PictureFragment" />
+        <action
+            android:id="@+id/action_loginFragment_self"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_MenuFragment"
+            app:destination="@id/MenuFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -112,7 +121,11 @@
         tools:layout="@layout/fragment_parcel_locker_map">
 
 
+        <action
+            android:id="@+id/action_ParcelLockerMapFragment_to_unlocksFragment"
+            app:destination="@id/unlocksFragment" />
+        <action
+            android:id="@+id/action_ParcelLockerMapFragment_to_unlocksFragment2"
+            app:destination="@id/unlocksFragment" />
     </fragment>
-
-    action_FirstFragment_to_ParcelLockerMapFragment
 </navigation>

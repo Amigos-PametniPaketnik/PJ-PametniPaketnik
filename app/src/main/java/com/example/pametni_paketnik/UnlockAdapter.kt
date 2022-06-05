@@ -28,7 +28,7 @@ class UnlockAdapter(private val data: MutableList<Unlocked>, private val onClick
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_card, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_card_lockers, parent, false)
         return ViewHolder(view)
     }
 

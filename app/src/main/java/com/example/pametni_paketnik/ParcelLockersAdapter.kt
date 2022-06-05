@@ -14,7 +14,7 @@ class ParcelLockersAdapter(private val data: MutableList<ParcelLocker>, private 
         val tvBoxID: TextView = ItemView.findViewById(R.id.item_boxid)
         val tvDatetimeOpened: TextView = ItemView.findViewById(R.id.item_datetimeopened)
         val tvOpened: TextView = ItemView.findViewById(R.id.item_opened)
-        val line: CardView = ItemView.findViewById(R.id.card_view_lockers)
+        val line: CardView = ItemView.findViewById(R.id.card_view)
     }
 
     interface MyOnClick {
@@ -23,7 +23,7 @@ class ParcelLockersAdapter(private val data: MutableList<ParcelLocker>, private 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_card_lockers, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_card, parent, false)
         return ViewHolder(view)
     }
 
