@@ -3,7 +3,7 @@ package com.example.pametni_paketnik.models
 import java.util.*
 
 
-class AccessPermission (
+data class AccessPermission (
     var idParcelLocker: String,
     var idUser:String,
     var accessableFrom:Date,

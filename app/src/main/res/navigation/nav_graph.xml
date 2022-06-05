@@ -3,17 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.example.pametni_paketnik.FirstFragment"
+        android:name="com.example.pametni_paketnik.OpenBoxFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_unlocksFragment"
+            app:destination="@id/unlocksFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/MenuFragment"
+        android:name="com.example.pametni_paketnik.MenuFragment"
+        android:label="@string/menu_fragment_label"
+        tools:layout="@layout/fragment_menu">
+
+        <action
+            android:id="@+id/action_MenuFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_MenuFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_MenuFragment_to_MapFragment"
+            app:destination="@id/profileFragment" />
         <action
             android:id="@+id/action_FirstFragment_to_ParcelLockerMapFragment"
             app:destination="@id/ParcelLockerMapFragment" />
@@ -27,6 +46,64 @@
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.pametni_paketnik.ui.login.LoginFragment"
+        android:label="Prijava"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:launchSingleTop="true"/>
+        <action
+            android:id="@+id/action_loginFragment_to_PictureFragment"
+            app:destination="@id/PictureFragment"
+            app:launchSingleTop="true"/>
+        <action
+            android:id="@+id/action_loginFragment_to_PictureFragment2"
+            app:destination="@id/PictureFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.pametni_paketnik.ProfileFragment"
+        android:label="Profil"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/unlocksFragment"
+        android:name="com.example.pametni_paketnik.UnlocksFragment"
+        android:label="Odklepi paketnikov"
+        tools:layout="@layout/fragment_unlocks" >
+        <action
+            android:id="@+id/action_unlocksFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/PictureFragment"
+        android:name="com.example.pametni_paketnik.BiometricLoginFragment"
+        android:label="@string/picture_fragment_label"
+        tools:layout="@layout/fragment_picture">
+
+        <action
+            android:id="@+id/action_PictureFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_PictureFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_PictureFragment_to_menuFragment"
+            app:destination="@id/MenuFragment" />
+        <action
+            android:id="@+id/action_PictureFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/ParcelLockerMapFragment"
