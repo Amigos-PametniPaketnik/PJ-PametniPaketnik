@@ -5,6 +5,7 @@
     android:id="@+id/username"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".ProfileFragment">
 
     <View
@@ -64,12 +65,13 @@
         android:text="UPORABNIŠKO IME"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.26"
+        app:layout_constraintVertical_bias="0.27"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:paddingBottom="20dp"
         android:textStyle="bold"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textColor="@color/white"/>
 
     <TextView
@@ -79,7 +81,7 @@
         android:layout_marginLeft="50dp"
         android:text="INFORMACIJ O RAČUNU"
         android:textStyle="bold"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:layout_marginLeft="50dp"
-        android:text="Ime:"
+        android:text="IME: "
         android:textStyle="bold"
         android:textSize="16sp"
         android:textColor="@color/black"
@@ -110,7 +112,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Priimek:"
+        android:text="PRIIMEK: "
         android:textStyle="bold"
         android:textSize="16sp"
         android:textColor="@color/black"
@@ -126,7 +128,7 @@
         android:id="@+id/emailLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Email:"
+        android:text="EMAIL: "
         android:textStyle="bold"
         android:textSize="16sp"
         android:textColor="@color/black"
@@ -165,35 +167,46 @@
         android:id="@+id/usernameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
         android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.06"
-        app:layout_constraintStart_toEndOf="@+id/usernameLabel"
-        app:layout_constraintTop_toTopOf="@+id/usernameLabel" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameLabel" />
 
     <TextView
         android:id="@+id/nameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/usernameText"
-        app:layout_constraintTop_toBottomOf="@+id/usernameText" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/nameLabel" />
 
     <TextView
         android:id="@+id/lastNameText"
-        android:layout_width="0dp"
-        android:layout_height="22dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/nameText"
-        app:layout_constraintTop_toBottomOf="@+id/nameText" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/lastnameLabel" />
 
     <TextView
         android:id="@+id/emailText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/lastNameText"
-        app:layout_constraintTop_toBottomOf="@+id/lastNameText" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/emailLabel" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/logOutBtn"
