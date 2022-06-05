@@ -30,7 +30,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import id.zelory.compressor.Compressor
 
 
 private const val FILE_NAME = "photo"
@@ -99,7 +98,6 @@ class PictureFragment : Fragment() {
             val data = BitmapFactory.decodeFile(photoFile.absolutePath) //comment this and use above line for lower quality image
             biometricLoginViewModel.authenticateWithPhoto(photoFile)
             binding.progressBar.visibility = View.VISIBLE
-            Toast.makeText(requireContext(), "Poteka indentifikacija na podlagi slike...", Toast.LENGTH_LONG).show()
             //binding.imageView2.setImageBitmap(data)
         }
         else{

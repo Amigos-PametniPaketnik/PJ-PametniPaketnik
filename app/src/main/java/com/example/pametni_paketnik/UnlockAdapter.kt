@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pametni_paketnik.models.Unlocked
+import java.text.SimpleDateFormat
 
 class UnlockAdapter(private val data: MutableList<Unlocked>, private val onClickObject: UnlockAdapter.MyOnClick): RecyclerView.Adapter<UnlockAdapter.ViewHolder>() {
 
@@ -46,7 +47,8 @@ class UnlockAdapter(private val data: MutableList<Unlocked>, private val onClick
             }
         })
         holder.tvBoxID.text = ItemsViewModel?.idParcelLocker
-        holder.tvDatetimeOpened.text = ItemsViewModel?.dateTime.toString()
+        val formatDate = SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
+        holder.tvDatetimeOpened.text = formatDate.format(ItemsViewModel?.dateTime).toString()
         if (ItemsViewModel?.opened!!) {
             holder.tvOpened.text = "Uspešen"
             holder.tvOpened.setTextColor(R.color.teal_700)

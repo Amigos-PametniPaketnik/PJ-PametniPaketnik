@@ -27,7 +27,7 @@ class LoginDataSource {
                     """{"authtype" : "basic", "username" : "${username}", "password" : "${password}"}"""
 
                 val request = Request.Builder()
-                    .url("http://192.168.1.104:3001/api/users/authenticate")
+                    .url("http://snf-58216.vm.okeanos-global.grnet.gr:3001/api/users/authenticate")
                     .post(payload.toRequestBody(MEDIA_TYPE_JSON))
                     .build()
 

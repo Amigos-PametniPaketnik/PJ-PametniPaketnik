@@ -193,7 +193,7 @@ class OpenBoxViewModel(val _app: Application): AndroidViewModel(_app) {
                 Log.e("Payload: ", payload)
 
                 val request = Request.Builder()
-                    .url("http://192.168.1.104:3001/api/unlocks")
+                    .url("http://snf-58216.vm.okeanos-global.grnet.gr:3001/api/unlocks")
                     .addHeader("Authorization", "Bearer " + token)
                     .post(payload.toRequestBody(MEDIA_TYPE_JSON))
                     .build()
@@ -223,7 +223,7 @@ class OpenBoxViewModel(val _app: Application): AndroidViewModel(_app) {
                 val payload = """{"idParcelLocker" : "${parcelLocker}"}"""
 
                 val request = Request.Builder()
-                    .url("http://192.168.1.104:3001/api/users/hasPremissionToOpen/"+user.id)
+                    .url("http://snf-58216.vm.okeanos-global.grnet.gr:3001/api/users/hasPremissionToOpen/"+user.id)
                     .addHeader("Authorization", "Bearer " + token)
                     .post(payload.toRequestBody(MEDIA_TYPE_JSON))
                     .build()
