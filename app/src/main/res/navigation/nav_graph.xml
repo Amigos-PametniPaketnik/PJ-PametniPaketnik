@@ -98,5 +98,8 @@
         <action
             android:id="@+id/action_PictureFragment_to_menuFragment"
             app:destination="@id/MenuFragment" />
+        <action
+            android:id="@+id/action_PictureFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 </navigation>

@@ -58,6 +58,18 @@ class MyApplication: Application() {
             sharedPreferences.getString("email", "")!!
         )
     }
+    fun removeLoggedInUser() {
+        with(sharedPreferences.edit()) {
+            remove("id")
+            remove("username")
+            remove("name")
+            remove("accesstoken")
+            remove("lastname")
+            remove("email")
+            remove("AccessToken")
+            apply()
+        }
+    }
     fun saveAccessToken(accessToken: String) {
         with(sharedPreferences.edit()) {
             putString("AccessToken", accessToken)

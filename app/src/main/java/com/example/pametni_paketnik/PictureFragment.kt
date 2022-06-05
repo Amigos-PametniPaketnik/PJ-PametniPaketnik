@@ -33,7 +33,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.pametni_paketnik.data.model.LoggedInUser
 import com.example.pametni_paketnik.ui.login.LoggedInUserView
-import id.zelory.compressor.Compressor
 
 
 private const val FILE_NAME = "photo"
@@ -103,6 +102,7 @@ class BiometricLoginFragment : Fragment() {
           //val data: Bitmap = result.data?.extras?.get("data") as Bitmap
             val data = BitmapFactory.decodeFile(photoFile.absolutePath) //comment this and use above line for lower quality image
             biometricLoginViewModel.authenticateWithPhoto(photoFile)
+            Toast.makeText(requireContext(), "Poteka indentifikacija na podlagi slike...", Toast.LENGTH_LONG).show()
             binding.progressBar.visibility = View.VISIBLE
             //binding.imageView2.setImageBitmap(data)
         }
@@ -146,6 +146,7 @@ class BiometricLoginFragment : Fragment() {
     private fun showLoginFailed(@StringRes errorString: Int) {
         val appContext = context?.applicationContext ?: return
         Toast.makeText(appContext, errorString, Toast.LENGTH_LONG).show()
+        findNavController().navigate(R.id.action_PictureFragment_to_loginFragment)
     }
 
 }

@@ -58,8 +58,9 @@ class ProfileFragment : Fragment() {
                 findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         })
 
-        binding.buttonOpenBox.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_FirstFragment)
+        binding.logOutBtn.setOnClickListener {
+            app.removeLoggedInUser()
+            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         }
     }
 
