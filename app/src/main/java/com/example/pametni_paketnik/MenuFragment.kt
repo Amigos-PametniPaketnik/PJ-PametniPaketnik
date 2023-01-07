@@ -59,6 +59,9 @@ class MenuFragment : Fragment() {
         binding.buttonScan.setOnClickListener {
             findNavController().navigate(R.id.action_MenuFragment_to_FirstFragment)
         }
+        binding.buttonDistance.setOnClickListener {
+            findNavController().navigate(R.id.action_MenuFragment_to_CitysFragment)
+        }
     }
 
 }

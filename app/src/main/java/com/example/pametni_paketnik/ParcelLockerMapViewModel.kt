@@ -34,7 +34,7 @@ class ParcelLockerMapViewModel(val _app: Application): AndroidViewModel(_app) {
                 val userId = "628d0646400faf9774a152cb"
 
                 val request = Request.Builder()
-                    .url("http://snf-58216.vm.okeanos-global.grnet.gr:3001/api/parcel-lockers/"+userId)
+                    .url("http://snf-59574.vm.okeanos-global.grnet.gr:3001/api/parcel-lockers/"+userId)
                     //.addHeader("Authorization", "Bearer " + token)
                     .build()
 

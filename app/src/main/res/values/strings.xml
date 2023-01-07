@@ -24,4 +24,6 @@
     <string name="menu_fragment_label" />
     <string name="Map" />
     <string name="fragment_parcel_locker_map_label" />
+    <string name="fragment_citys_label" />
+    <string name="fragment_citys_map_label" />
 </resources>

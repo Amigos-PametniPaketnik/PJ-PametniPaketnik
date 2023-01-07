@@ -37,7 +37,7 @@ class UnlocksViewModel(val _app: Application) : AndroidViewModel(_app) {
                 val MEDIA_TYPE_JSON = "application/json; charset=utf-8".toMediaType()
 
                 val request = Request.Builder()
-                    .url("http://snf-58216.vm.okeanos-global.grnet.gr:3001/api/unlocks/getByParcelLocker/"+boxID)
+                    .url("http://snf-59574.vm.okeanos-global.grnet.gr:3001/api/unlocks/getByParcelLocker/"+boxID)
                     .addHeader("Authorization", "Bearer " + token)
                     .build()
 

@@ -39,6 +39,9 @@
         <action
             android:id="@+id/action_MenuFragment_to_ParcelLockerMapFragment"
             app:destination="@id/ParcelLockerMapFragment" />
+        <action
+            android:id="@+id/action_MenuFragment_to_CitysFragment"
+            app:destination="@id/CitysFragment" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
@@ -128,4 +131,25 @@
             android:id="@+id/action_ParcelLockerMapFragment_to_unlocksFragment2"
             app:destination="@id/unlocksFragment" />
     </fragment>
+
+
+    <fragment
+        android:id="@+id/CitysMapFragment"
+        android:name="com.example.pametni_paketnik.CitysMapFragment"
+        android:label="@string/fragment_citys_map_label"
+        tools:layout="@layout/fragment_citys_map">
+    </fragment>
+
+    <fragment
+        android:id="@+id/CitysFragment"
+        android:name="com.example.pametni_paketnik.CitysFragment"
+        android:label="@string/fragment_citys_label"
+        tools:layout="@layout/fragment_citys">
+
+        <action
+            android:id="@+id/action_CitysFragment_to_CitysMapFragment"
+            app:destination="@id/CitysMapFragment" />
+
+    </fragment>
+
 </navigation>

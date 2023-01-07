@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.pametni_paketnik.data.model.LoggedInUser
+import com.example.pametni_paketnik.matrixTSP.TSP
+import com.example.pametni_paketnik.matrixTSP.location
 import com.example.pametni_paketnik.ui.login.LoggedInUserView
 import java.util.*
 
@@ -11,12 +13,14 @@ const val MY_SP_FILE_NAME = "myshared.data"
 
 class MyApplication: Application() {
     lateinit var sharedPreferences: SharedPreferences
-
+    lateinit var citysList:ArrayList<location>
+    lateinit var citysIndexList:ArrayList<Int>
     override fun onCreate() {
         super.onCreate()
         initShared()
         if (!containsID())
             saveID(UUID.randomUUID().toString().replace("-", ""))
+        citysIndexList= ArrayList<Int>()
     }
     fun initShared() {
         sharedPreferences = getSharedPreferences(MY_SP_FILE_NAME, Context.MODE_PRIVATE)
