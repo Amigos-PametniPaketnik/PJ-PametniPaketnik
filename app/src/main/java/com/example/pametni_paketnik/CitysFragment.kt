@@ -135,81 +135,89 @@ class CitysFragment : Fragment() {
             var locationsSelected: List<location>
             locationsSelected=ArrayList<location>()
 
-            if(app.citysIndexList.size!=0){
+            if(app.citysIndexList.size!=0) {
 
-
-            for(i in app.citysIndexList){
-                locationsSelected.add(locations[i])
-            }
-
-                var citysTemp= ArrayList<TSP.City>()
-                for(i in locationsSelected){
-                    val tspTemp = TSP()
-                    var z = tspTemp.City()
-                    z.index=i.index
-                    z.x=i.latitude.toDouble()
-                    z.y=i.longitude.toDouble()
-                    citysTemp.add(z)
-                }
-
-
-                var inputStream2: InputStream? = null
-
-                var data2 = ""
-                inputStream2 = activity!!.assets.open("matrixTime.json")
-
-                val buf2 = StringBuilder()
-                val in2 = BufferedReader(InputStreamReader(inputStream2, "UTF-8"))
-                var str2: String?
-                while (in2.readLine().also { str2 = it } != null) {
-                    buf2.append(str2)
-                }
-                in2.close()
-                data2 = buf2.toString()
-
-                System.out.println("lel")
-                for (i in app.citysIndexList){
-                    System.out.println(i)
-                }
-
-
-                val matrika: Array<DoubleArray> = gson.fromJson(data2, Array<DoubleArray>::class.java)
-
-                val tours = ArrayList<Tour>()
-                for (i in 0..29) {
-                    val eilTsp = TSP("eil101.tsp", 10000,citysTemp,matrika)
-
-                    val ga = GA(100, 0.8, 0.1)
-                    val bestPath = ga.execute(eilTsp)
-                    tours.add(bestPath)
-
-                }
+                if (!(app.citysIndexList.size == 1 && app.citysIndexList[0] == 0)) {
 
 
 
-                var min=999999999.0;
-                var poz=0;
-                var counter=0;
-                for (i in tours){
-                    if(i.distance<min){
-                        min=i.distance
-                        poz=counter
+                    for (i in app.citysIndexList) {
+                        locationsSelected.add(locations[i])
                     }
-                    counter++;
 
+                    var citysTemp = ArrayList<TSP.City>()
+                    for (i in locationsSelected) {
+                        val tspTemp = TSP()
+                        var z = tspTemp.City()
+                        z.index = i.index
+                        z.x = i.latitude.toDouble()
+                        z.y = i.longitude.toDouble()
+                        citysTemp.add(z)
+                    }
+
+
+                    var inputStream2: InputStream? = null
+
+                    var data2 = ""
+                    inputStream2 = activity!!.assets.open("matrixTime.json")
+
+                    val buf2 = StringBuilder()
+                    val in2 = BufferedReader(InputStreamReader(inputStream2, "UTF-8"))
+                    var str2: String?
+                    while (in2.readLine().also { str2 = it } != null) {
+                        buf2.append(str2)
+                    }
+                    in2.close()
+                    data2 = buf2.toString()
+
+                    System.out.println("lel")
+                    for (i in app.citysIndexList) {
+                        System.out.println(i)
+                    }
+
+
+                    val matrika: Array<DoubleArray> =
+                        gson.fromJson(data2, Array<DoubleArray>::class.java)
+
+                    val tours = ArrayList<Tour>()
+                    for (i in 0..29) {
+                        val eilTsp = TSP("eil101.tsp", 10000, citysTemp, matrika)
+
+                        val ga = GA(100, 0.8, 0.1)
+                        val bestPath = ga.execute(eilTsp)
+                        tours.add(bestPath)
+
+                    }
+
+
+                    var min = 999999999.0;
+                    var poz = 0;
+                    var counter = 0;
+                    for (i in tours) {
+                        if (i.distance < min) {
+                            min = i.distance
+                            poz = counter
+                        }
+                        counter++;
+
+                    }
+
+                    var tempLocations: ArrayList<location> = ArrayList<location>(tours[poz].path.size)
+
+
+                    for (i in tours[poz].path) {
+                        tempLocations.add(locations[i.index])
+                    }
+
+
+
+
+                    app.citysList = tempLocations
                 }
-
-                var tempLocations:ArrayList<location> = ArrayList<location>(tours[poz].path.size)
-
-
-                for(i in tours[poz].path){
-                    tempLocations.add(locations[i.index])
+                else{
+                    locationsSelected.add(locations[0])
+                    app.citysList=locationsSelected
                 }
-
-
-
-
-                app.citysList= tempLocations
             }
             else{
                 locationsSelected.add(locations[0])
@@ -241,20 +249,23 @@ class CitysFragment : Fragment() {
             var locationsSelected2: List<location>
             locationsSelected2=ArrayList<location>()
 
-            if(app.citysIndexList.size!=0){
+            if(app.citysIndexList.size!=0) {
+
+                if (!(app.citysIndexList.size == 1 && app.citysIndexList[0] == 0)) {
 
 
-                for(i in app.citysIndexList){
+
+                for (i in app.citysIndexList) {
                     locationsSelected2.add(locations[i])
                 }
 
-                var citysTemp= ArrayList<TSP.City>()
-                for(i in locationsSelected2){
+                var citysTemp = ArrayList<TSP.City>()
+                for (i in locationsSelected2) {
                     val tspTemp = TSP()
                     var z = tspTemp.City()
-                    z.index=i.index
-                    z.x=i.latitude.toDouble()
-                    z.y=i.longitude.toDouble()
+                    z.index = i.index
+                    z.x = i.latitude.toDouble()
+                    z.y = i.longitude.toDouble()
                     citysTemp.add(z)
                 }
 
@@ -274,16 +285,17 @@ class CitysFragment : Fragment() {
                 data2 = buf2.toString()
 
                 System.out.println("lel")
-                for (i in app.citysIndexList){
+                for (i in app.citysIndexList) {
                     System.out.println(i)
                 }
 
 
-                val matrika: Array<DoubleArray> = gson.fromJson(data2, Array<DoubleArray>::class.java)
+                val matrika: Array<DoubleArray> =
+                    gson.fromJson(data2, Array<DoubleArray>::class.java)
 
                 val tours = ArrayList<Tour>()
                 for (i in 0..29) {
-                    val eilTsp = TSP("eil101.tsp", 10000,citysTemp,matrika)
+                    val eilTsp = TSP("eil101.tsp", 10000, citysTemp, matrika)
 
                     val ga = GA(100, 0.8, 0.1)
                     val bestPath = ga.execute(eilTsp)
@@ -292,30 +304,34 @@ class CitysFragment : Fragment() {
                 }
 
 
-
-                var min=999999999.0;
-                var poz=0;
-                var counter=0;
-                for (i in tours){
-                    if(i.distance<min){
-                        min=i.distance
-                        poz=counter
+                var min = 999999999.0;
+                var poz = 0;
+                var counter = 0;
+                for (i in tours) {
+                    if (i.distance < min) {
+                        min = i.distance
+                        poz = counter
                     }
                     counter++;
 
                 }
 
-                var tempLocations:ArrayList<location> = ArrayList<location>(tours[poz].path.size)
+                var tempLocations: ArrayList<location> = ArrayList<location>(tours[poz].path.size)
 
 
-                for(i in tours[poz].path){
+                for (i in tours[poz].path) {
                     tempLocations.add(locations[i.index])
                 }
 
 
 
 
-                app.citysList= tempLocations
+                app.citysList = tempLocations
+            }
+                else{
+                    locationsSelected2.add(locations[0])
+                    app.citysList=locationsSelected2
+                }
             }
             else{
                 locationsSelected2.add(locations[0])
