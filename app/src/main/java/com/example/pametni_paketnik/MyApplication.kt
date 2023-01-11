@@ -15,6 +15,7 @@ class MyApplication: Application() {
     lateinit var sharedPreferences: SharedPreferences
     lateinit var citysList:ArrayList<location>
     lateinit var citysIndexList:ArrayList<Int>
+     var matrixTime:Boolean = false
     override fun onCreate() {
         super.onCreate()
         initShared()

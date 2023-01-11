@@ -227,7 +227,7 @@ class CitysFragment : Fragment() {
 
 
 
-
+            app.matrixTime=true
             findNavController().navigate(R.id.action_CitysFragment_to_CitysMapFragment)
         }
         binding.button2.setOnClickListener {
@@ -341,7 +341,7 @@ class CitysFragment : Fragment() {
 
 
 
-
+            app.matrixTime=false
             findNavController().navigate(R.id.action_CitysFragment_to_CitysMapFragment)
         }
     }

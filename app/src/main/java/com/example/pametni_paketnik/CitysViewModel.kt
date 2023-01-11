@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken
 
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import org.osmdroid.bonuspack.routing.OSRMRoadManager
 import org.osmdroid.bonuspack.routing.Road
 import org.osmdroid.util.GeoPoint
@@ -30,8 +31,9 @@ class CitysViewModel(val _app: Application) : AndroidViewModel(_app) {
     private val _unlocks2 = MutableLiveData<MutableList<location>?>()
     val citys: LiveData<MutableList<location>?> = _unlocks
     val citysAll: LiveData<MutableList<location>?> = _unlocks2
-    private val _road: MutableLiveData<Road> = MutableLiveData()
-    public val road = _road
+    private var _road: Road = Road()
+   //private val _road: Road = Road()
+    public var road = _road
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun loadCitys(x: String) {
@@ -47,14 +49,20 @@ class CitysViewModel(val _app: Application) : AndroidViewModel(_app) {
     }
     fun loadRoad(waypoints : ArrayList<GeoPoint>, context: Context){
         viewModelScope.launch {
+
+        suspend {
             val roadManager = OSRMRoadManager(context)
-            road.value = try {
-                roadManager.getRoad(waypoints)
+            try {
+                System.out.println("RATALO6")
+                _road =  roadManager.getRoad(waypoints)
+                System.out.println("RATALO")
             }
+
             catch (exception: Exception) {
-                println(exception.message)
-                return@launch
+                println(exception.message+"dedek")
+                //      return@launch
             }
+        }.invoke()
         }
     }
 }

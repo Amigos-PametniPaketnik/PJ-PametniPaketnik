@@ -55,6 +55,10 @@ import org.osmdroid.bonuspack.routing.GoogleRoadManager
 import org.osmdroid.bonuspack.routing.OSRMRoadManager
 import org.osmdroid.bonuspack.routing.Road
 import org.osmdroid.bonuspack.routing.RoadManager
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
+import android.widget.Button
+import android.widget.TextView
 
 
 class CitysMapFragment : Fragment() {
@@ -154,13 +158,15 @@ class CitysMapFragment : Fragment() {
         )
         mapController.setCenter(startPoint)
         activityResultLauncher.launch(appPerms)
-
+/*
         citysViewModel.road.observe(viewLifecycleOwner, Observer { returnedroad ->
             Log.e("STANJE", "Sproženo!")
             var roadOverlay = RoadManager.buildRoadOverlay(returnedroad, Color.BLUE, 10f)
+
             path1 = roadOverlay
+            map.overlays.add(path1)
             map.invalidate()
-        })
+        })*/
     }
     override fun onResume() {
         super.onResume()
@@ -226,6 +232,7 @@ class CitysMapFragment : Fragment() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     fun initMap() {
         roadManager = OSRMRoadManager(context)
         initLoaction()
@@ -245,9 +252,37 @@ class CitysMapFragment : Fragment() {
 
                 map.overlays.add(markerInstructor)
             }
-        getPath()
+        var waypoints: ArrayList<GeoPoint> = kotlin.collections.ArrayList()
+        for (city in app.citysList) {
+            var startPoint1: GeoPoint = GeoPoint(46.554650, 15.645881)
+            startPoint1.latitude = city.latitude.toDouble()
+            startPoint1.longitude = city.longitude.toDouble()
+            waypoints.add(startPoint1)
+        }
+        var startPoint2: GeoPoint = GeoPoint(46.55, 15.64)
+        startPoint2.latitude = app.citysList[0].latitude.toDouble()
+        startPoint2.longitude = app.citysList[0].longitude.toDouble()
 
+        val policy = ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
 
+       // citysViewModel.loadRoad(waypoints, requireContext())
+       var  tempRoad= roadManager.getRoad(waypoints)
+       System.out.println("length: "+ tempRoad.mLength+"   time: "+ tempRoad.mDuration/60)
+
+        var roadOverlay = RoadManager.buildRoadOverlay(tempRoad, Color.BLUE, 10f)
+
+        path1=roadOverlay
+
+        map.overlays.add(path1)
+
+       var btn = activity!!.findViewById<View>(R.id.distanceTime) as TextView
+        if (app.matrixTime){
+            btn.text = "Distance: "+tempRoad.mDuration/60+" min"
+        }
+        else{
+            btn.text = "Distance: "+tempRoad.mLength+" km"
+        }
 
             map.invalidate()
 
@@ -292,6 +327,17 @@ class CitysMapFragment : Fragment() {
             startPoint2.longitude = app.citysList[0].longitude.toDouble()
 
             citysViewModel.loadRoad(waypoints, requireContext())
+
+
+
+            var roadOverlay = RoadManager.buildRoadOverlay(citysViewModel.road, Color.BLUE, 10f)
+
+            path1=roadOverlay
+
+            map.overlays.add(path1)
+
+
+
     }
 
 
@@ -311,3 +357,5 @@ class CitysMapFragment : Fragment() {
         _binding = null
     }
 }
+
+
