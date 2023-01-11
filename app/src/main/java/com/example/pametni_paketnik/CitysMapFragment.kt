@@ -35,6 +35,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+
 import timber.log.Timber
 import java.util.*
 import java.util.ArrayList
@@ -43,10 +44,17 @@ import com.google.android.gms.maps.model.LatLng
 
 import com.google.android.gms.maps.model.PolylineOptions
 import android.graphics.Color
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.maps.model.Polyline
+import org.osmdroid.bonuspack.routing.GoogleRoadManager
+import org.osmdroid.bonuspack.routing.OSRMRoadManager
+import org.osmdroid.bonuspack.routing.Road
+import org.osmdroid.bonuspack.routing.RoadManager
 
 
 class CitysMapFragment : Fragment() {
@@ -57,6 +65,9 @@ class CitysMapFragment : Fragment() {
     private var locationRequest: com.google.android.gms.location.LocationRequest
     private var requestingLocationUpdates = false
     private lateinit var app: MyApplication
+    private lateinit var citysViewModel: CitysViewModel
+    private var road : MutableLiveData<Road> = MutableLiveData()
+
     companion object {
         val REQUEST_CHECK_SETTINGS = 20202
     }
@@ -88,6 +99,7 @@ class CitysMapFragment : Fragment() {
     }
     lateinit var map: MapView
     var startPoint: GeoPoint = GeoPoint(46.554650, 15.645881);
+    lateinit var roadManager: OSRMRoadManager
 
     lateinit var mapController: IMapController
     var marker: Marker? = null
@@ -118,6 +130,7 @@ class CitysMapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
         app = requireActivity().application as MyApplication
+        citysViewModel = ViewModelProvider(this).get(CitysViewModel::class.java)
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
@@ -125,6 +138,7 @@ class CitysMapFragment : Fragment() {
         Configuration.getInstance()
             .load(requireActivity().applicationContext, requireActivity().getPreferences(Context.MODE_PRIVATE))
        val binding = FragmentCitysMapBinding.inflate(layoutInflater) //ADD THIS LINE
+
 
         map = binding.map
         map.setTileSource(TileSourceFactory.MAPNIK)
@@ -141,6 +155,12 @@ class CitysMapFragment : Fragment() {
         mapController.setCenter(startPoint)
         activityResultLauncher.launch(appPerms)
 
+        citysViewModel.road.observe(viewLifecycleOwner, Observer { returnedroad ->
+            Log.e("STANJE", "Sproženo!")
+            var roadOverlay = RoadManager.buildRoadOverlay(returnedroad, Color.BLUE, 10f)
+            path1 = roadOverlay
+            map.invalidate()
+        })
     }
     override fun onResume() {
         super.onResume()
@@ -207,6 +227,7 @@ class CitysMapFragment : Fragment() {
 
 
     fun initMap() {
+        roadManager = OSRMRoadManager(context)
         initLoaction()
 
 
@@ -239,26 +260,38 @@ class CitysMapFragment : Fragment() {
         mapController.setCenter(startPoint);
         map.invalidate()
     }
+    private fun getPath() { //Singelton
+//        if (path1 == null) {
+//            path1 = org.osmdroid.views.overlay.Polyline()
+//            path1!!.outlinePaint.color = Color.BLUE
+//            path1!!.outlinePaint.strokeWidth = 10f
+//            for(i in app.citysList){
+//                var startPoint1: GeoPoint = GeoPoint(46.554650, 15.645881);
+//                startPoint1.latitude =i.latitude.toDouble()
+//                startPoint1.longitude=i.longitude.toDouble()
+//                path1!!.addPoint(startPoint1)
+//            }
+//            var startPoint2: GeoPoint = GeoPoint(46.554650, 15.645881);
+//            startPoint2.latitude =app.citysList[0].latitude.toDouble()
+//            startPoint2.longitude=app.citysList[0].longitude.toDouble()
+//            path1!!.addPoint(startPoint2)
+//
+//            map.overlayManager.add(path1)
+//        }
+//        return path1!!
 
-    private fun getPath(): org.osmdroid.views.overlay.Polyline { //Singelton
-        if (path1 == null) {
-            path1 = org.osmdroid.views.overlay.Polyline()
-            path1!!.outlinePaint.color = Color.BLUE
-            path1!!.outlinePaint.strokeWidth = 10f
-            for(i in app.citysList){
-                var startPoint1: GeoPoint = GeoPoint(46.554650, 15.645881);
-                startPoint1.latitude =i.latitude.toDouble()
-                startPoint1.longitude=i.longitude.toDouble()
-                path1!!.addPoint(startPoint1)
+            var waypoints: ArrayList<GeoPoint> = kotlin.collections.ArrayList()
+            for (city in app.citysList) {
+                var startPoint1: GeoPoint = GeoPoint(46.554650, 15.645881)
+                startPoint1.latitude = city.latitude.toDouble()
+                startPoint1.longitude = city.longitude.toDouble()
+                waypoints.add(startPoint1)
             }
-            var startPoint2: GeoPoint = GeoPoint(46.554650, 15.645881);
-            startPoint2.latitude =app.citysList[0].latitude.toDouble()
-            startPoint2.longitude=app.citysList[0].longitude.toDouble()
-            path1!!.addPoint(startPoint2)
+            var startPoint2: GeoPoint = GeoPoint(46.55, 15.64)
+            startPoint2.latitude = app.citysList[0].latitude.toDouble()
+            startPoint2.longitude = app.citysList[0].longitude.toDouble()
 
-            map.overlayManager.add(path1)
-        }
-        return path1!!
+            citysViewModel.loadRoad(waypoints, requireContext())
     }
 
 
@@ -273,7 +306,6 @@ class CitysMapFragment : Fragment() {
         }
         return marker!!
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
