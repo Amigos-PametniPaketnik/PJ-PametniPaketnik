@@ -59,6 +59,7 @@ import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.widget.Button
 import android.widget.TextView
+import kotlin.math.roundToInt
 
 
 class CitysMapFragment : Fragment() {
@@ -278,10 +279,10 @@ class CitysMapFragment : Fragment() {
 
        var btn = activity!!.findViewById<View>(R.id.distanceTime) as TextView
         if (app.matrixTime){
-            btn.text = "Distance: "+tempRoad.mDuration/60+" min"
+            btn.text = "Distance: "+(tempRoad.mDuration/60).roundToInt()+" min"
         }
         else{
-            btn.text = "Distance: "+tempRoad.mLength+" km"
+            btn.text = "Distance: "+tempRoad.mLength.roundToInt()+" km"
         }
 
             map.invalidate()
