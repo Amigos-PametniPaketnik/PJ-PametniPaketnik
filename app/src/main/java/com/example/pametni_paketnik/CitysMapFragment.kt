@@ -98,6 +98,7 @@ class CitysMapFragment : Fragment() {
             Timber.d("Permissions granted $allAreGranted")
             if (allAreGranted) {
                 initMap()
+                getPath()
                 mapController.setCenter(startPoint)
             }
         }
@@ -112,6 +113,7 @@ class CitysMapFragment : Fragment() {
     private val binding get() = _binding!!
     var path1: org.osmdroid.views.overlay.Polyline? = null
     private lateinit var navController: NavController
+    private lateinit var currentRoad: Road
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -159,15 +161,21 @@ class CitysMapFragment : Fragment() {
         )
         mapController.setCenter(startPoint)
         activityResultLauncher.launch(appPerms)
-/*
-        citysViewModel.road.observe(viewLifecycleOwner, Observer { returnedroad ->
-            Log.e("STANJE", "Sproženo!")
-            var roadOverlay = RoadManager.buildRoadOverlay(returnedroad, Color.BLUE, 10f)
 
+        citysViewModel.road.observe(viewLifecycleOwner, Observer { returnedroad ->
+            var roadOverlay = RoadManager.buildRoadOverlay(returnedroad, Color.BLUE, 10f)
             path1 = roadOverlay
-            map.overlays.add(path1)
+            map.
+            map.overlayManager.add(path1)
             map.invalidate()
-        })*/
+            var btn = activity!!.findViewById<View>(R.id.distanceTime) as TextView
+            if (app.matrixTime){
+                btn.text = "Time to travel: "+(returnedroad.mDuration/60).roundToInt()+" min"
+            }
+            else{
+                btn.text = "Distance: "+returnedroad.mLength.roundToInt()+" km"
+            }
+        })
     }
     override fun onResume() {
         super.onResume()
@@ -249,7 +257,9 @@ class CitysMapFragment : Fragment() {
                 markerInstructor.title="Indeks: "+i.index + "\nNaslov: " + i.address+ "\nPošta: "+i.postOffice+" "+i.postNumber+"\nŠtevilo paketnikov: "+i.parcelLockerCount
 
                 markerInstructor!!.position=startPoint1
-
+                markerInstructor.image = resources.getDrawable(R.drawable.paketnik_icon)
+                //markerInstructor.icon = resources.getDrawable(R.drawable.paketnik_location_icon)
+                markerInstructor.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
 
                 map.overlays.add(markerInstructor)
             }
@@ -263,29 +273,7 @@ class CitysMapFragment : Fragment() {
         var startPoint2: GeoPoint = GeoPoint(46.55, 15.64)
         startPoint2.latitude = app.citysList[0].latitude.toDouble()
         startPoint2.longitude = app.citysList[0].longitude.toDouble()
-
-        val policy = ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
-
-       // citysViewModel.loadRoad(waypoints, requireContext())
-       var  tempRoad= roadManager.getRoad(waypoints)
-       System.out.println("length: "+ tempRoad.mLength+"   time: "+ tempRoad.mDuration/60)
-
-        var roadOverlay = RoadManager.buildRoadOverlay(tempRoad, Color.BLUE, 10f)
-
-        path1=roadOverlay
-
-        map.overlays.add(path1)
-
-       var btn = activity!!.findViewById<View>(R.id.distanceTime) as TextView
-        if (app.matrixTime){
-            btn.text = "Distance: "+(tempRoad.mDuration/60).roundToInt()+" min"
-        }
-        else{
-            btn.text = "Distance: "+tempRoad.mLength.roundToInt()+" km"
-        }
-
-            map.invalidate()
+        map.invalidate()
 
 
         if (!requestingLocationUpdates) {
@@ -297,25 +285,6 @@ class CitysMapFragment : Fragment() {
         map.invalidate()
     }
     private fun getPath() { //Singelton
-//        if (path1 == null) {
-//            path1 = org.osmdroid.views.overlay.Polyline()
-//            path1!!.outlinePaint.color = Color.BLUE
-//            path1!!.outlinePaint.strokeWidth = 10f
-//            for(i in app.citysList){
-//                var startPoint1: GeoPoint = GeoPoint(46.554650, 15.645881);
-//                startPoint1.latitude =i.latitude.toDouble()
-//                startPoint1.longitude=i.longitude.toDouble()
-//                path1!!.addPoint(startPoint1)
-//            }
-//            var startPoint2: GeoPoint = GeoPoint(46.554650, 15.645881);
-//            startPoint2.latitude =app.citysList[0].latitude.toDouble()
-//            startPoint2.longitude=app.citysList[0].longitude.toDouble()
-//            path1!!.addPoint(startPoint2)
-//
-//            map.overlayManager.add(path1)
-//        }
-//        return path1!!
-
             var waypoints: ArrayList<GeoPoint> = kotlin.collections.ArrayList()
             for (city in app.citysList) {
                 var startPoint1: GeoPoint = GeoPoint(46.554650, 15.645881)
@@ -326,19 +295,9 @@ class CitysMapFragment : Fragment() {
             var startPoint2: GeoPoint = GeoPoint(46.55, 15.64)
             startPoint2.latitude = app.citysList[0].latitude.toDouble()
             startPoint2.longitude = app.citysList[0].longitude.toDouble()
+            waypoints.add(startPoint2)
 
-            citysViewModel.loadRoad(waypoints, requireContext())
-
-
-
-            var roadOverlay = RoadManager.buildRoadOverlay(citysViewModel.road, Color.BLUE, 10f)
-
-            path1=roadOverlay
-
-            map.overlays.add(path1)
-
-
-
+            citysViewModel.loadRoad(waypoints, requireContext()) // Load road with ViewModel
     }
 
 

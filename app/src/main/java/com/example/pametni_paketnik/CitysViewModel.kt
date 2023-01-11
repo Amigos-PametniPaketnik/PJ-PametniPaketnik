@@ -5,10 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.pametni_paketnik.data.Result
 import com.example.pametni_paketnik.matrixTSP.location
 import com.example.pametni_paketnik.ui.login.LoggedInUserView
@@ -17,10 +14,12 @@ import com.google.gson.reflect.TypeToken
 
 
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
+import kotlinx.coroutines.withContext
 import org.osmdroid.bonuspack.routing.OSRMRoadManager
 import org.osmdroid.bonuspack.routing.Road
+import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.util.GeoPoint
 import java.util.ArrayList
 
@@ -31,9 +30,8 @@ class CitysViewModel(val _app: Application) : AndroidViewModel(_app) {
     private val _unlocks2 = MutableLiveData<MutableList<location>?>()
     val citys: LiveData<MutableList<location>?> = _unlocks
     val citysAll: LiveData<MutableList<location>?> = _unlocks2
-    private var _road: Road = Road()
-   //private val _road: Road = Road()
-    public var road = _road
+    private val _road: MutableLiveData<Road> = MutableLiveData()
+    public val road = _road
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun loadCitys(x: String) {
@@ -49,20 +47,35 @@ class CitysViewModel(val _app: Application) : AndroidViewModel(_app) {
     }
     fun loadRoad(waypoints : ArrayList<GeoPoint>, context: Context){
         viewModelScope.launch {
-
-        suspend {
-            val roadManager = OSRMRoadManager(context)
-            try {
-                System.out.println("RATALO6")
-                _road =  roadManager.getRoad(waypoints)
-                System.out.println("RATALO")
+            val result : Result<Road> = try {
+                loadRoadWithRoadManager(waypoints, context)
             }
-
             catch (exception: Exception) {
-                println(exception.message+"dedek")
-                //      return@launch
+                Log.e("NAPAKA CESTE", exception.message.toString())
+                Result.Error(exception)
             }
-        }.invoke()
+
+            when(result) {
+                is Result.Success -> {
+                    _road.value = result.data as Road
+                }
+                else -> {
+                    
+                }
+            }
+        }
+    }
+    private suspend fun loadRoadWithRoadManager(waypoints: ArrayList<GeoPoint>, context: Context): Result<Road> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val roadManager = OSRMRoadManager(context)
+                val road = roadManager.getRoad(waypoints)
+                return@withContext Result.Success(road)
+            }
+            catch (exception: Exception) {
+                Log.e("NAPAKA V CESTAH", exception.stackTraceToString())
+                return@withContext Result.Error(exception)
+            }
         }
     }
 }

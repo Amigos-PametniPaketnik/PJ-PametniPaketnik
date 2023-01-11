@@ -122,13 +122,8 @@
         android:name="com.example.pametni_paketnik.ParcelLockerMapFragment"
         android:label="@string/fragment_parcel_locker_map_label"
         tools:layout="@layout/fragment_parcel_locker_map">
-
-
         <action
             android:id="@+id/action_ParcelLockerMapFragment_to_unlocksFragment"
-            app:destination="@id/unlocksFragment" />
-        <action
-            android:id="@+id/action_ParcelLockerMapFragment_to_unlocksFragment2"
             app:destination="@id/unlocksFragment" />
     </fragment>
 
