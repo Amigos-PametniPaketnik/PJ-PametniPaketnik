@@ -165,7 +165,6 @@ class CitysMapFragment : Fragment() {
         citysViewModel.road.observe(viewLifecycleOwner, Observer { returnedroad ->
             var roadOverlay = RoadManager.buildRoadOverlay(returnedroad, Color.BLUE, 10f)
             path1 = roadOverlay
-            map.
             map.overlayManager.add(path1)
             map.invalidate()
             var btn = activity!!.findViewById<View>(R.id.distanceTime) as TextView
